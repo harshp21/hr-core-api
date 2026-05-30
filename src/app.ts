@@ -19,7 +19,7 @@ app.get("/", (_req, res) => {
   res.status(HttpStatus.OK).json({ service: env.appName, status: "ready" });
 });
 
-app.use("/api/v1", healthModule);
+app.use("/", healthModule);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
