@@ -7,4 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Add domain models here as the project evolves.
+model Employee {
+  id             String   @id @default(uuid())
+  employeeCode   String   @unique
+  firstName      String
+  lastName       String
+  email          String   @unique
+  country        String
+  department     String
+  jobTitle       String
+  salary         Decimal
+  currency       String
+  employmentType String
+  dateOfJoining  DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
