@@ -1,17 +1,51 @@
-import request from "supertest";
-import app from "../../app";
+// health.service.test.ts
+import { checkPostgresDatabase, aggregateStatus } from './health.service';
+import { PrismaClient } from '@prisma/client';
+import { DependencyStatus } from './health.types';
+import { HEALTH_DEPENDENCY, HEALTH_STATUS } from './health.constants';
 
-describe("Health endpoint", () => {
-  it("should return 200 and the expected response", async () => {
-    const response = await request(app).get("/health");
+describe('Functional Health Check Unit Tests', () => {
+  
+  describe('checkPostgresDatabase', () => {
+    it('should return UP when PostgreSQL responds successfully', async () => {
+      // Mock the PrismaClient structural footprint functionally
+      const mockPrismaSuccess = {
+        $queryRaw: jest.fn().mockResolvedValue([{ '?column?': 1 }]),
+      } as unknown as PrismaClient;
 
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ status: "ok" });
+      const result = await checkPostgresDatabase(mockPrismaSuccess);
+      expect(result).toEqual({
+        name: HEALTH_DEPENDENCY.POSTGRES,
+        status: HEALTH_STATUS.UP,
+      });
+    });
+
+    it('should return DOWN when PostgreSQL connection throws an error', async () => {
+      const mockPrismaFailure = {
+        $queryRaw: jest.fn().mockRejectedValue(new Error('PostgreSQL Connection Timeout')),
+      } as unknown as PrismaClient;
+
+      const result = await checkPostgresDatabase(mockPrismaFailure);
+      expect(result).toEqual({
+        name: HEALTH_DEPENDENCY.POSTGRES,
+        status: HEALTH_STATUS.DOWN,
+      });
+    });
   });
 
-  it("should not include any extra fields", async () => {
-    const response = await request(app).get("/health");
+  describe('aggregateStatus', () => {
+    it('should evaluate to UP if all dependencies are running', () => {
+      const mockDeps: readonly DependencyStatus[] = [
+        { name: HEALTH_DEPENDENCY.POSTGRES, status: HEALTH_STATUS.UP },
+      ];
+      expect(aggregateStatus(mockDeps)).toBe(HEALTH_STATUS.UP);
+    });
 
-    expect(Object.keys(response.body)).toEqual(["status"]);
+    it('should evaluate to DOWN if any dependency drops', () => {
+      const mockDeps: readonly DependencyStatus[] = [
+        { name: HEALTH_DEPENDENCY.POSTGRES, status: HEALTH_STATUS.DOWN },
+      ];
+      expect(aggregateStatus(mockDeps)).toBe(HEALTH_STATUS.DOWN);
+    });
   });
 });
