@@ -43,4 +43,15 @@ export class EmployeeController {
 
     res.json(employee);
   }
+
+  async deleteEmployee(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    await this.employeeService.deleteEmployee(
+      req.params.id,
+    );
+
+    res.status(204).send();
+  }
 }

@@ -142,4 +142,38 @@ describe("EmployeeController", () => {
     expect(res.json)
       .toHaveBeenCalledWith(updatedEmployee);
   });
+
+  it("should delete employee and return 204", async () => {
+    const req = {
+      params: {
+        id: "employee-id",
+      },
+    };
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+    };
+
+    serviceMock.deleteEmployee.mockResolvedValue(
+      undefined,
+    );
+
+    await controller.deleteEmployee(
+      req as any,
+      res as any,
+    );
+
+    expect(
+      serviceMock.deleteEmployee,
+    ).toHaveBeenCalledWith(
+      "employee-id",
+    );
+
+    expect(res.status)
+      .toHaveBeenCalledWith(204);
+
+    expect(res.send)
+      .toHaveBeenCalled();
+  });
 });
