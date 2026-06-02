@@ -72,8 +72,14 @@ export class PrismaEmployeeRepository
     });
   }
 
-  async delete(id: string): Promise<Employee | null> {
-    throw new Error("Not implemented");
+  async delete(
+    id: string,
+  ): Promise<void> {
+    await this.prisma.employee.delete({
+      where: {
+        id,
+      },
+    });
   }
 
   async list(query: any): Promise<Employee[] | null> {

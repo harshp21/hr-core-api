@@ -233,4 +233,37 @@ describe("PrismaEmployeeRepository", () => {
     expect(result.department)
       .toBe("Platform");
   });
+
+
+  it("should delete employee", async () => {
+    const employee =
+      await repository.create({
+        employeeCode: "EMP001",
+        firstName: "John",
+        lastName: "Doe",
+        email: "john@example.com",
+
+        department: "Engineering",
+        country: "India",
+
+        salary: 50000,
+
+        jobTitle: "Senior Software Engineer",
+        currency: "INR",
+        employmentType: "FULL_TIME",
+        dateOfJoining: "2024-01-01",
+      });
+
+    await repository.delete(
+      employee.id,
+    );
+
+    const result =
+      await repository.findById(
+        employee.id,
+      );
+
+    expect(result)
+      .toBeNull();
+  });
 });
