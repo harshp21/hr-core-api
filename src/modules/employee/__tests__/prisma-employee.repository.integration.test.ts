@@ -266,4 +266,70 @@ describe("PrismaEmployeeRepository", () => {
     expect(result)
       .toBeNull();
   });
+
+  it("should list employees with pagination", async () => {
+    await repository.create({
+      employeeCode: "EMP001",
+      firstName: "John",
+      lastName: "Doe",
+      email: "john1@example.com",
+      department: "Engineering",
+      country: "India",
+      salary: 50000,
+      jobTitle: "Dev",
+      currency: "INR",
+      employmentType: "FULL_TIME",
+      dateOfJoining: "2024-01-01",
+    });
+
+    await repository.create({
+      employeeCode: "EMP002",
+      firstName: "Jane",
+      lastName: "Doe",
+      email: "jane@example.com",
+      department: "Engineering",
+      country: "India",
+      salary: 60000,
+      jobTitle: "Dev",
+      currency: "INR",
+      employmentType: "FULL_TIME",
+      dateOfJoining: "2024-01-01",
+    });
+
+    const result =
+      await repository.list({
+        page: 1,
+        pageSize: 10,
+      });
+
+    expect(result.data.length).toBe(2);
+    expect(result.total).toBe(2);
+  });
+
+  it("should paginate employees", async () => {
+    for (let i = 1; i <= 5; i++) {
+      await repository.create({
+        employeeCode: `EMP00${i}`,
+        firstName: "User",
+        lastName: `${i}`,
+        email: `user${i}@mail.com`,
+        department: "Engineering",
+        country: "India",
+        salary: 50000,
+        jobTitle: "Dev",
+        currency: "INR",
+        employmentType: "FULL_TIME",
+        dateOfJoining: "2024-01-01",
+      });
+    }
+
+    const result =
+      await repository.list({
+        page: 2,
+        pageSize: 2,
+      });
+
+    expect(result.data.length).toBe(2);
+    expect(result.page).toBe(2);
+  });
 });

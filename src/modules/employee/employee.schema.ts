@@ -71,6 +71,14 @@ export type UpdateEmployeeInput =
 export type ListEmployeesQuery =
   z.infer<typeof listEmployeesQuerySchema>;
 
+export type ListEmployeesResponse = {
+  data: Employee[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
 export interface PaginatedEmployees {
   data: Employee[];
   total: number;
