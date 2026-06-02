@@ -3,6 +3,7 @@ import { HttpStatus } from "@shared/constants/httpStatus";
 class AppError extends Error {
   constructor(
     public readonly message: string,
+    public readonly errorCode: string,
     public readonly statusCode: number
   ) {
     super(message);
@@ -15,7 +16,7 @@ class NotFoundError extends AppError {
     public readonly errorCode: string,
     message: string,
   ) {
-    super(message, HttpStatus.NOT_FOUND);
+    super(message, errorCode, HttpStatus.NOT_FOUND);
   }
 }
 
@@ -25,7 +26,7 @@ class ConflictError extends AppError {
     public readonly errorCode: string,
     message: string,
   ) {
-    super(message, HttpStatus.CONFLICT);
+    super(message, errorCode, HttpStatus.CONFLICT);
   }
 }
 
@@ -35,7 +36,7 @@ class ValidationError extends AppError {
     public readonly errorCode: string,
     message: string,
   ) {
-    super(message, HttpStatus.BAD_REQUEST);
+    super(message, errorCode, HttpStatus.BAD_REQUEST);
   }
 }
 
