@@ -18,4 +18,16 @@ export class EmployeeController {
 
     res.status(201).json(employee);
   }
+
+  async getEmployeeById(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    const employee =
+      await this.employeeService.getEmployeeById(
+        req.params.id,
+      );
+
+    res.json(employee);
+  }
 }

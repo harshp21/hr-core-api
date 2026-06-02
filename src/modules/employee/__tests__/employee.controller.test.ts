@@ -62,4 +62,41 @@ describe("EmployeeController", () => {
     expect(res.json)
       .toHaveBeenCalledWith(employee);
   });
+
+  it("should return employee by id", async () => {
+    const employee = {
+      id: "employee-id",
+      employeeCode: "EMP001",
+      firstName: "John",
+      lastName: "Doe",
+      email: "john@example.com",
+    };
+
+    const req = {
+      params: {
+        id: "employee-id",
+      },
+    };
+
+    const res = {
+      json: jest.fn(),
+    };
+
+    serviceMock.getEmployeeById
+      .mockResolvedValue(employee as any);
+
+    await controller.getEmployeeById(
+      req as any,
+      res as any,
+    );
+
+    expect(
+      serviceMock.getEmployeeById,
+    ).toHaveBeenCalledWith(
+      "employee-id",
+    );
+
+    expect(res.json)
+      .toHaveBeenCalledWith(employee);
+  });
 });
