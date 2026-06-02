@@ -1,7 +1,7 @@
 import { Employee, PrismaClient } from "@prisma/client";
 
 import type { EmployeeRepository } from "./employee.repository.interface";
-import { CreateEmployeeInput } from "./employee.schema";
+import { CreateEmployeeInput, UpdateEmployeeInput } from "./employee.schema";
 
 export class PrismaEmployeeRepository
   implements EmployeeRepository {
@@ -58,8 +58,18 @@ export class PrismaEmployeeRepository
     });
   }
 
-  async update(id: string, input: any): Promise<Employee | null> {
-    throw new Error("Not implemented");
+  async update(
+    id: string,
+    input: UpdateEmployeeInput,
+  ): Promise<Employee> {
+    return this.prisma.employee.update({
+      where: {
+        id,
+      },
+      data: {
+        ...input,
+      },
+    });
   }
 
   async delete(id: string): Promise<Employee | null> {

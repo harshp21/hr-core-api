@@ -197,4 +197,40 @@ describe("PrismaEmployeeRepository", () => {
 
     expect(result).toBeNull();
   });
+
+
+  it("should update employee", async () => {
+    const employee =
+      await repository.create({
+        employeeCode: "EMP001",
+        firstName: "John",
+        lastName: "Doe",
+        email: "john@example.com",
+
+        department: "Engineering",
+        country: "India",
+
+        jobTitle: "Senior Software Engineer",
+        currency: "INR",
+        employmentType: "FULL_TIME",
+        dateOfJoining: "2024-01-01",
+
+        salary: 50000,
+      });
+
+    const result =
+      await repository.update(
+        employee.id,
+        {
+          firstName: "Jane",
+          department: "Platform",
+        },
+      );
+
+    expect(result.firstName)
+      .toBe("Jane");
+
+    expect(result.department)
+      .toBe("Platform");
+  });
 });
