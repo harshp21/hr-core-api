@@ -99,4 +99,47 @@ describe("EmployeeController", () => {
     expect(res.json)
       .toHaveBeenCalledWith(employee);
   });
+
+  it("should update employee and return updated employee", async () => {
+    const updatedEmployee = {
+      id: "employee-id",
+      employeeCode: "EMP001",
+      firstName: "John",
+      lastName: "Doe",
+      email: "john@example.com",
+      salary: 70000,
+    };
+
+    const req = {
+      params: {
+        id: "employee-id",
+      },
+      body: {
+        salary: 70000,
+      },
+    };
+
+    const res = {
+      json: jest.fn(),
+    };
+
+    serviceMock.updateEmployee.mockResolvedValue(
+      updatedEmployee as any,
+    );
+
+    await controller.updateEmployee(
+      req as any,
+      res as any,
+    );
+
+    expect(
+      serviceMock.updateEmployee,
+    ).toHaveBeenCalledWith(
+      "employee-id",
+      req.body,
+    );
+
+    expect(res.json)
+      .toHaveBeenCalledWith(updatedEmployee);
+  });
 });

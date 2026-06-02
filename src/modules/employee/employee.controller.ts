@@ -30,4 +30,17 @@ export class EmployeeController {
 
     res.json(employee);
   }
+
+  async updateEmployee(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    const employee =
+      await this.employeeService.updateEmployee(
+        req.params.id,
+        req.body,
+      );
+
+    res.json(employee);
+  }
 }
