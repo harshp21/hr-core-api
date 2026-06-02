@@ -1,7 +1,8 @@
 import { ConflictError, NotFoundError } from "@shared/errors/app.error";
 import { EmployeeRepository } from "./employee.repository.interface";
 import { EMPLOYEE_ERROR_CODES } from "@shared/constants/errorCodes";
-import { CreateEmployeeInput, Employee, ListEmployeesQuery, PaginatedEmployees, SalaryInsights, UpdateEmployeeInput } from "./employee.schema";
+import { CreateEmployeeInput, ListEmployeesQuery, PaginatedEmployees, SalaryInsights, UpdateEmployeeInput } from "./employee.schema";
+import { Employee } from "./types/employee.types";
 export class EmployeeService {
   constructor(private readonly repository: EmployeeRepository) { }
 

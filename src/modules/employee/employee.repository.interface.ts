@@ -1,10 +1,10 @@
 import type {
   CreateEmployeeInput,
-  Employee,
   ListEmployeesQuery,
   PaginatedEmployees,
   SalaryInsights,
 } from "./employee.schema";
+import { Employee } from "./types/employee.types";
 
 export interface EmployeeRepository {
 
