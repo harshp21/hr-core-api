@@ -1,80 +1,63 @@
-import { HttpStatus } from "@shared/constants/httpStatus";
+import { Request, Response, NextFunction } from "express";
 import { EmployeeService } from "./employee.service";
-import { Request, Response } from "express";
 
 export class EmployeeController {
-  constructor(
-    private readonly employeeService: EmployeeService,
-  ) { }
+  constructor(private readonly service: EmployeeService) {}
 
+  createEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await this.service.createEmployee(req.body);
+      res.status(HttpStatus.CREATED).json(result);
+    } catch (err) {
+      next(err);
+    }
+  };
 
-  async createEmployee(
-    req: Request,
-    res: Response,
-  ): Promise<void> {
-    const employee =
-      await this.employeeService.createEmployee(
-        req.body,
-      );
+  getEmployeeById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await this.service.getEmployeeById(req.params.id);
+      res.status(HttpStatus.OK).json(result);
+    } catch (err) {
+      next(err);
+    }
+  };
 
-    res.status(HttpStatus.CREATED).json(employee);
-  }
-
-  async getEmployeeById(
-    req: Request,
-    res: Response,
-  ): Promise<void> {
-    const employee =
-      await this.employeeService.getEmployeeById(
+  updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await this.service.updateEmployee(
         req.params.id,
+        req.body
       );
+      res.status(HttpStatus.OK).json(result);
+    } catch (err) {
+      next(err);
+    }
+  };
 
-    res.json(employee);
-  }
+  deleteEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await this.service.deleteEmployee(req.params.id);
+      res.status(HttpStatus.NO_CONTENT).send();
+    } catch (err) {
+      next(err);
+    }
+  };
 
-  async updateEmployee(
-    req: Request,
-    res: Response,
-  ): Promise<void> {
-    const employee =
-      await this.employeeService.updateEmployee(
-        req.params.id,
-        req.body,
-      );
+  listEmployees = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await this.service.listEmployees(req.query as any);
+      res.status(HttpStatus.OK).json(result);
+    } catch (err) {
+      next(err);
+    }
+  };
 
-    res.json(employee);
-  }
-
-  async deleteEmployee(
-    req: Request,
-    res: Response,
-  ): Promise<void> {
-    await this.employeeService.deleteEmployee(
-      req.params.id,
-    );
-
-    res.status(HttpStatus.NO_CONTENT).send();
-  }
-
-  async listEmployees(
-    req: Request,
-    res: Response,
-  ): Promise<void> {
-    const result =
-      await this.employeeService.listEmployees(
-        req.query as any,
-      );
-
-    res.json(result);
-  }
-
-  async getSalaryInsights(
-    req: Request,
-    res: Response,
-  ): Promise<void> {
-    const insights =
-      await this.employeeService.getSalaryInsights();
-
-    res.json(insights);
-  }
+  getSalaryInsights = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await this.service.getSalaryInsights();
+      res.status(HttpStatus.OK).json(result);
+    } catch (err) {
+      next(err);
+    }
+  };
 }

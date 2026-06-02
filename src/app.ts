@@ -5,9 +5,8 @@ import morgan from "morgan";
 import { env } from "@config/env";
 import { healthModule } from "@modules/health";
 import { errorHandler } from "@shared/middleware/error-handler.middleware";
-import { notFoundHandler } from "@shared/middleware/notFound.middleware";
 import { HttpStatus } from "@shared/constants/httpStatus";
-import { employeeRoutes } from "@modules/employee/employee.routes";
+import { employeeRouter } from "./modules/employee/employee.container";
 
 const app = express();
 
@@ -16,17 +15,14 @@ app.use(cors({ origin: env.corsOrigins }));
 app.use(express.json());
 app.use(morgan("combined"));
 
-app.get("/", (_req, res) => {
-  res.status(HttpStatus.OK).json({ service: env.appName, status: "ready" });
-});
 
 app.use("/", healthModule);
-app.use(notFoundHandler);
-app.use(errorHandler);
-
 app.use(
   "/api/employees",
-  employeeRoutes,
+  employeeRouter,
 );
+
+app.use(errorHandler);
+
 
 export default app;

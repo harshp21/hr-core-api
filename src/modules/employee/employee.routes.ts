@@ -1,42 +1,55 @@
 import { Router } from "express";
-
-import { employeeService } from "@container/employee.container";
-
 import { EmployeeController } from "./employee.controller";
+import { validate } from "@/shared/middleware/validate";
+import {
+  createEmployeeSchema,
+  updateEmployeeSchema,
+  listEmployeesSchema,
+} from "./employee.schema";
 
-const router = Router();
+export const employeeRoutes = (
+  controller: EmployeeController,
+) => {
+  const router = Router();
 
-const controller =
-  new EmployeeController(employeeService);
+  // CREATE
+  router.post(
+    "/",
+    validate(createEmployeeSchema),
+    controller.createEmployee,
+  );
 
-router.post(
-  "/",
-  controller.createEmployee.bind(controller),
-);
+  // LIST
+  router.get(
+    "/",
+    validate(listEmployeesSchema),
+    controller.listEmployees,
+  );
 
-router.get(
-  "/",
-  controller.listEmployees.bind(controller),
-);
+  // SALARY INSIGHTS
+  router.get(
+    "/salary-insights",
+    controller.getSalaryInsights,
+  );
 
-router.get(
-  "/insights",
-  controller.getSalaryInsights.bind(controller),
-);
+  // READ ONE
+  router.get(
+    "/:id",
+    controller.getEmployeeById,
+  );
 
-router.get(
-  "/:id",
-  controller.getEmployeeById.bind(controller),
-);
+  // UPDATE
+  router.put(
+    "/:id",
+    validate(updateEmployeeSchema),
+    controller.updateEmployee,
+  );
 
-router.put(
-  "/:id",
-  controller.updateEmployee.bind(controller),
-);
+  // DELETE
+  router.delete(
+    "/:id",
+    controller.deleteEmployee,
+  );
 
-router.delete(
-  "/:id",
-  controller.deleteEmployee.bind(controller),
-);
-
-export { router as employeeRoutes };
+  return router;
+};

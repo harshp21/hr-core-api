@@ -1,25 +1,25 @@
-import {
-  Request,
-  Response,
-  NextFunction,
-} from "express";
+import { ZodSchema } from "zod";
+import { Request, Response, NextFunction } from "express";
 
-import { ValidationSchema }
-  from "../validation/validation.schema";
+export const validate =
+  (schema: ZodSchema) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = schema.parse({
+        body: req.body,
+        query: req.query,
+        params: req.params,
+      });
 
-export function validateRequest(
-  schema: ValidationSchema,
-) {
-  return (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
+      req.body = result.body;
+      req.query = result.query;
+      req.params = result.params;
 
-    schema.body?.parse(req.body);
-    schema.params?.parse(req.params);
-    schema.query?.parse(req.query);
-
-    next();
+      next();
+    } catch (err: any) {
+      return res.status(400).json({
+        message: "Validation error",
+        errors: err.errors,
+      });
+    }
   };
-}
