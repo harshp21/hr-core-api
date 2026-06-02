@@ -29,7 +29,7 @@ export class EmployeeController {
         req.params.id,
       );
 
-    res.status(HttpStatus.OK).json(employee);
+    res.json(employee);
   }
 
   async updateEmployee(
@@ -42,7 +42,7 @@ export class EmployeeController {
         req.body,
       );
 
-    res.status(HttpStatus.OK).json(employee);
+    res.json(employee);
   }
 
   async deleteEmployee(
@@ -65,6 +65,16 @@ export class EmployeeController {
         req.query as any,
       );
 
-    res.status(HttpStatus.OK).json(result);
+    res.json(result);
+  }
+
+  async getSalaryInsights(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    const insights =
+      await this.employeeService.getSalaryInsights();
+
+    res.json(insights);
   }
 }

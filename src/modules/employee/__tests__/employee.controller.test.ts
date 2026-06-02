@@ -220,4 +220,36 @@ describe("EmployeeController", () => {
     expect(res.json)
       .toHaveBeenCalledWith(response);
   });
+
+  it("should return salary insights", async () => {
+    const insights = {
+      totalEmployees: 10000,
+      totalPayroll: 800000000,
+      averageSalary: 80000,
+      highestSalary: 250000,
+      lowestSalary: 30000,
+    };
+
+    const req = {};
+
+    const res = {
+      json: jest.fn(),
+    };
+
+    serviceMock.getSalaryInsights.mockResolvedValue(
+      insights as any,
+    );
+
+    await controller.getSalaryInsights(
+      req as any,
+      res as any,
+    );
+
+    expect(
+      serviceMock.getSalaryInsights,
+    ).toHaveBeenCalled();
+
+    expect(res.json)
+      .toHaveBeenCalledWith(insights);
+  });
 });
