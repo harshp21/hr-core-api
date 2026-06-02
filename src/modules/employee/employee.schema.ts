@@ -78,4 +78,10 @@ export interface PaginatedEmployees {
   pageSize: number;
 }
 
+export interface SalaryInsights {
+  totalEmployees: number;
+  totalPayroll: number;
+  averageSalary: number;
+}
+
 export type Employee = z.infer<typeof employeeSchema>;

@@ -16,6 +16,7 @@ describe("EmployeeService", () => {
       update: jest.fn(),
       delete: jest.fn(),
       list: jest.fn(),
+      getSalaryInsights: jest.fn(),
     };
 
     service = new EmployeeService(repositoryMock);
@@ -403,6 +404,30 @@ describe("EmployeeService", () => {
       );
 
     })
+  });
+
+  describe("Get salary insights", () => {
+
+    it("should return salary insights", async () => {
+      const insights = {
+        totalEmployees: 10000,
+        totalPayroll: 800000000,
+        averageSalary: 80000,
+      };
+
+      repositoryMock.getSalaryInsights.mockResolvedValue(
+        insights,
+      );
+
+      const result =
+        await service.getSalaryInsights();
+
+      expect(
+        repositoryMock.getSalaryInsights,
+      ).toHaveBeenCalled();
+
+      expect(result).toEqual(insights);
+    });
   });
 
 });
