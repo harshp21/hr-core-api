@@ -1,13 +1,13 @@
 import { ConflictError, NotFoundError } from "@shared/errors/app.error";
 import { errorHandler } from "../error-handler.middleware";
-import { EMPLOYEE_ERROR_CODES } from "@shared/constants/errorCodes";
+import { ERROR_CODES } from "@shared/constants/errorCodes";
 import { HttpStatus } from "@shared/constants/httpStatus";
 import z from "zod";
 
 describe("errorHandler", () => {
   it("should return 404 for NotFoundError", () => {
     const error = new NotFoundError(
-      EMPLOYEE_ERROR_CODES.NOT_FOUND,
+      ERROR_CODES.EMPLOYEE.NOT_FOUND,
       "Employee not found",
     );
 
@@ -32,14 +32,14 @@ describe("errorHandler", () => {
 
     expect(res.json)
       .toHaveBeenCalledWith({
-        code: "EMPLOYEE_NOT_FOUND",
+        code: ERROR_CODES.EMPLOYEE.NOT_FOUND,
         message: "Employee not found",
       });
   });
 
   it("should return 409 for ConflictError", () => {
     const error = new ConflictError(
-      EMPLOYEE_ERROR_CODES.EMAIL_EXISTS,
+      ERROR_CODES.EMPLOYEE.EMAIL_EXISTS,
       "Employee email already exists",
     );
 
@@ -64,7 +64,7 @@ describe("errorHandler", () => {
 
     expect(res.json)
       .toHaveBeenCalledWith({
-        code: EMPLOYEE_ERROR_CODES.EMAIL_EXISTS,
+        code: ERROR_CODES.EMPLOYEE.EMAIL_EXISTS,
         message:
           "Employee email already exists",
       });

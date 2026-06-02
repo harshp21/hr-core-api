@@ -1,11 +1,6 @@
 import { Router } from "express";
 import { EmployeeController } from "./employee.controller";
-import { validate } from "@/shared/middleware/validate";
-import {
-  createEmployeeSchema,
-  updateEmployeeSchema,
-  listEmployeesSchema,
-} from "./employee.schema";
+import { asyncHandler } from "@shared/utils/asyncHandler";
 
 export const employeeRoutes = (
   controller: EmployeeController,
@@ -15,40 +10,37 @@ export const employeeRoutes = (
   // CREATE
   router.post(
     "/",
-    validate(createEmployeeSchema),
-    controller.createEmployee,
+    asyncHandler((req, res) => controller.createEmployee(req, res)),
   );
 
   // LIST
   router.get(
     "/",
-    validate(listEmployeesSchema),
-    controller.listEmployees,
+    asyncHandler((req, res) => controller.listEmployees(req, res)),
   );
 
   // SALARY INSIGHTS
   router.get(
     "/salary-insights",
-    controller.getSalaryInsights,
+    asyncHandler((req, res) => controller.getSalaryInsights(req, res)),
   );
 
   // READ ONE
   router.get(
     "/:id",
-    controller.getEmployeeById,
+    asyncHandler((req, res) => controller.getEmployeeById(req, res)),
   );
 
   // UPDATE
   router.put(
     "/:id",
-    validate(updateEmployeeSchema),
-    controller.updateEmployee,
+    asyncHandler((req, res) => controller.updateEmployee(req, res)),
   );
 
   // DELETE
   router.delete(
     "/:id",
-    controller.deleteEmployee,
+    asyncHandler((req, res) => controller.deleteEmployee(req, res)),
   );
 
   return router;

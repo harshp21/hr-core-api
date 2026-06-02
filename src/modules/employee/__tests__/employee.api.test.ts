@@ -1,15 +1,19 @@
 import request from "supertest";
-import app from "@/app";
+import app from "./../../../app";
 
 describe("Employee API", () => {
+  const unique = () => Math.random().toString(36).slice(2, 10);
+
   it("should create employee via API", async () => {
+    const suffix = unique();
+
     const response = await request(app)
       .post("/api/employees")
       .send({
-        employeeCode: "EMP001",
+        employeeCode: `EMP-${suffix}`,
         firstName: "John",
         lastName: "Doe",
-        email: "john@example.com",
+        email: `john-${suffix}@example.com`,
         department: "Engineering",
         country: "India",
         salary: 50000,
@@ -20,17 +24,19 @@ describe("Employee API", () => {
       });
 
     expect(response.status).toBe(201);
-    expect(response.body.email).toBe("john@example.com");
+    expect(response.body.data.email).toBe(`john-${suffix}@example.com`);
   });
 
   it("should fetch employee by id", async () => {
+  const suffix = unique();
+
   const createRes = await request(app)
     .post("/api/employees")
     .send({
-      employeeCode: "EMP002",
+      employeeCode: `EMP-${suffix}`,
       firstName: "Jane",
       lastName: "Doe",
-      email: "jane@example.com",
+      email: `jane-${suffix}@example.com`,
       department: "Engineering",
       country: "India",
       salary: 60000,
@@ -40,24 +46,26 @@ describe("Employee API", () => {
       dateOfJoining: "2024-01-01",
     });
 
-    const id = createRes.body.id;
+    const id = createRes.body.data.id;
 
     const res = await request(app).get(
       `/api/employees/${id}`,
     );
 
     expect(res.status).toBe(200);
-    expect(res.body.id).toBe(id);
+    expect(res.body.data.id).toBe(id);
   });
 
   it("should delete employee via API", async () => {
+  const suffix = unique();
+
   const createRes = await request(app)
     .post("/api/employees")
     .send({
-      employeeCode: "EMP003",
+      employeeCode: `EMP-${suffix}`,
       firstName: "Mark",
       lastName: "Smith",
-      email: "mark@example.com",
+      email: `mark-${suffix}@example.com`,
       department: "Engineering",
       country: "India",
       salary: 70000,
@@ -67,7 +75,7 @@ describe("Employee API", () => {
       dateOfJoining: "2024-01-01",
     });
 
-    const id = createRes.body.id;
+    const id = createRes.body.data.id;
 
     const deleteRes = await request(app)
       .delete(`/api/employees/${id}`);
@@ -76,11 +84,13 @@ describe("Employee API", () => {
   });
 
   it("should list employees via API", async () => {
+  const suffix = unique();
+
   await request(app).post("/api/employees").send({
-    employeeCode: "EMP004",
+    employeeCode: `EMP-${suffix}`,
     firstName: "A",
     lastName: "B",
-    email: "a@example.com",
+    email: `a-${suffix}@example.com`,
     department: "Engineering",
     country: "India",
     salary: 50000,
@@ -94,6 +104,6 @@ describe("Employee API", () => {
     .get("/api/employees?page=1&limit=10");
 
   expect(res.status).toBe(200);
-  expect(res.body.data.length).toBeGreaterThan(0);
+  expect(res.body.data.data.length).toBeGreaterThan(0);
 });
 });

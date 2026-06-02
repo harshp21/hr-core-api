@@ -1,6 +1,6 @@
 import { ConflictError, NotFoundError } from "@shared/errors/app.error";
 import { EmployeeRepository } from "./employee.repository.interface";
-import { EMPLOYEE_ERROR_CODES } from "@shared/constants/errorCodes";
+import { ERROR_CODES } from "@shared/constants/errorCodes";
 import { CreateEmployeeInput, ListEmployeesQuery, PaginatedEmployees, SalaryInsights, UpdateEmployeeInput } from "./employee.schema";
 import { Employee } from "./types/employee.types";
 export class EmployeeService {
@@ -13,7 +13,7 @@ export class EmployeeService {
 
     if (!employee) {
       throw new NotFoundError(
-        EMPLOYEE_ERROR_CODES.NOT_FOUND,
+        ERROR_CODES.EMPLOYEE.NOT_FOUND,
         "Employee not found",
       );
     }
@@ -26,13 +26,13 @@ export class EmployeeService {
     const employee = await this.repository.findByEmail(payload.email);
 
     if (employee) {
-      throw new ConflictError(EMPLOYEE_ERROR_CODES.EMAIL_EXISTS, "Employee email already exists");
+      throw new ConflictError(ERROR_CODES.EMPLOYEE.EMAIL_EXISTS, "Employee email already exists");
     }
 
     const employeeCode = await this.repository.findByEmployeeCode(payload.employeeCode);
 
     if (employeeCode) {
-      throw new ConflictError(EMPLOYEE_ERROR_CODES.CODE_EXISTS, "Employee code already exists");
+      throw new ConflictError(ERROR_CODES.EMPLOYEE.CODE_EXISTS, "Employee code already exists");
     }
     return this.repository.create(payload);
   }

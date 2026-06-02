@@ -4,7 +4,7 @@ import { NextFunction } from "express";
 
 import { AppError }
   from "../errors/app.error";
-import { SYSTEM_ERROR_CODES } from "@shared/constants/errorCodes";
+import { ERROR_CODES } from "@shared/constants/errorCodes";
 import z, { ZodError } from "zod";
 import { HttpStatus } from "@shared/constants/httpStatus";
 
@@ -38,7 +38,7 @@ export function errorHandler(
   }
 
   res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-    code: SYSTEM_ERROR_CODES.INTERNAL_SERVER_ERROR,
+    code: ERROR_CODES.SYSTEM.INTERNAL,
     message: "Internal server error",
   });
 
