@@ -166,7 +166,36 @@ export class PrismaEmployeeRepository
     };
   }
 
-  async getSalaryInsights(): Promise<any> {
-    throw new Error("Not implemented");
-  }
+ async getSalaryInsights(): Promise<SalaryInsights> {
+  const result =
+    await this.prisma.employee.aggregate({
+      _count: {
+        id: true,
+      },
+      _avg: {
+        salary: true,
+      },
+      _sum: {
+        salary: true,
+      },
+      _min: {
+        salary: true,
+      },
+      _max: {
+        salary: true,
+      },
+    });
+
+  return {
+    totalEmployees: result._count.id,
+    averageSalary:
+      result._avg.salary?.toNumber() ?? 0,
+    totalSalaryExpense:
+      result._sum.salary?.toNumber() ?? 0,
+    minSalary:
+      result._min.salary?.toNumber() ?? 0,
+    maxSalary:
+      result._max.salary?.toNumber() ?? 0,
+  };
+}
 }
