@@ -28,4 +28,29 @@ describe("validateBody", () => {
 
     expect(next).toHaveBeenCalled();
   });
+
+  it("should throw when body is invalid", () => {
+    const schema = z.object({
+      firstName: z.string(),
+    });
+
+    const middleware =
+      validateBody(schema);
+
+    const req = {
+      body: {},
+    };
+
+    const res = {};
+
+    const next = jest.fn();
+
+    expect(() =>
+      middleware(
+        req as any,
+        res as any,
+        next,
+      ),
+    ).toThrow();
+  });
 });
