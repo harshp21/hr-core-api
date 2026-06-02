@@ -7,6 +7,7 @@ import { healthModule } from "@modules/health";
 import { errorHandler } from "@shared/middleware/error.middleware";
 import { notFoundHandler } from "@shared/middleware/notFound.middleware";
 import { HttpStatus } from "@shared/constants/httpStatus";
+import { employeeRoutes } from "@modules/employee/employee.routes";
 
 const app = express();
 
@@ -22,5 +23,10 @@ app.get("/", (_req, res) => {
 app.use("/", healthModule);
 app.use(notFoundHandler);
 app.use(errorHandler);
+
+app.use(
+  "/api/employees",
+  employeeRoutes,
+);
 
 export default app;
