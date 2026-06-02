@@ -4,7 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import { env } from "@config/env";
 import { healthModule } from "@modules/health";
-import { errorHandler } from "@shared/middleware/error.middleware";
+import { errorHandler } from "@shared/middleware/error-handler.middleware";
 import { notFoundHandler } from "@shared/middleware/notFound.middleware";
 import { HttpStatus } from "@shared/constants/httpStatus";
 import { employeeRoutes } from "@modules/employee/employee.routes";

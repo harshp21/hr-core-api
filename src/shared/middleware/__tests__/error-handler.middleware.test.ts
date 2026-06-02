@@ -1,10 +1,13 @@
-import { NotFoundError } from "@shared/errors/app.error";
+import { ConflictError, NotFoundError } from "@shared/errors/app.error";
 import { errorHandler } from "../error-handler.middleware";
+import { EMPLOYEE_ERROR_CODES } from "@shared/constants/errorCodes";
+import { HttpStatus } from "@shared/constants/httpStatus";
+import z from "zod";
 
 describe("errorHandler", () => {
   it("should return 404 for NotFoundError", () => {
     const error = new NotFoundError(
-      "EMPLOYEE_NOT_FOUND",
+      EMPLOYEE_ERROR_CODES.NOT_FOUND,
       "Employee not found",
     );
 
@@ -31,6 +34,85 @@ describe("errorHandler", () => {
       .toHaveBeenCalledWith({
         code: "EMPLOYEE_NOT_FOUND",
         message: "Employee not found",
+      });
+  });
+
+  it("should return 409 for ConflictError", () => {
+    const error = new ConflictError(
+      EMPLOYEE_ERROR_CODES.EMAIL_EXISTS,
+      "Employee email already exists",
+    );
+
+    const req = {};
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    const next = jest.fn();
+
+    errorHandler(
+      error,
+      req as any,
+      res as any,
+      next,
+    );
+
+    expect(res.status)
+      .toHaveBeenCalledWith(409);
+
+    expect(res.json)
+      .toHaveBeenCalledWith({
+        code: EMPLOYEE_ERROR_CODES.EMAIL_EXISTS,
+        message:
+          "Employee email already exists",
+      });
+  });
+
+
+  it("should return 400 for zod validation errors", () => {
+    const schema = z.object({
+      firstName: z.string(),
+    });
+
+    let error: Error;
+
+    try {
+      schema.parse({});
+    } catch (err) {
+      error = err as Error;
+    }
+
+    const req = {};
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    const next = jest.fn();
+
+    errorHandler(
+      error!,
+      req as any,
+      res as any,
+      next,
+    );
+
+    expect(res.status)
+      .toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+
+    expect(res.json)
+      .toHaveBeenCalledWith({
+        code: "VALIDATION_ERROR",
+        message: "Validation failed",
+        errors: [
+          {
+            field: "firstName",
+            message: expect.any(String),
+          },
+        ],
       });
   });
 });
