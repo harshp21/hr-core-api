@@ -19,18 +19,19 @@ describe("PrismaEmployeeRepository", () => {
   });
 
   it("should find employee by email", async () => {
-    const employee =
-      await prisma.employee.create({
-        data: {
-          employeeCode: "EMP001",
-          firstName: "John",
-          lastName: "Doe",
-          email: "john@example.com",
-          department: "Engineering",
-          country: "India",
-          salary: new Prisma.Decimal(50000),
-        },
-      });
+    const employee = await repository.create({
+      employeeCode: "EMP001",
+      firstName: "John",
+      lastName: "Doe",
+      email: "john@example.com",
+      department: "Engineering",
+      country: "India",
+      salary: 50000,
+      jobTitle: "Senior Software Engineer",
+      currency: "INR",
+      employmentType: "FULL_TIME",
+      dateOfJoining: "2024-01-01",
+    });
 
     const result =
       await repository.findByEmail(
@@ -47,18 +48,19 @@ describe("PrismaEmployeeRepository", () => {
   });
 
   it("should find employee by email", async () => {
-    const employee =
-      await prisma.employee.create({
-        data: {
-          employeeCode: "EMP001",
-          firstName: "John",
-          lastName: "Doe",
-          email: "john@example.com",
-          department: "Engineering",
-          country: "India",
-          salary: new Prisma.Decimal(50000),
-        },
-      });
+    const employee = await repository.create({
+      employeeCode: "EMP001",
+      firstName: "John",
+      lastName: "Doe",
+      email: "john@example.com",
+      department: "Engineering",
+      country: "India",
+      salary: 50000,
+      jobTitle: "Senior Software Engineer",
+      currency: "INR",
+      employmentType: "FULL_TIME",
+      dateOfJoining: "2024-01-01",
+    });
 
     const result =
       await repository.findByEmail(
@@ -84,18 +86,19 @@ describe("PrismaEmployeeRepository", () => {
   });
 
   it("should find employee by employee code", async () => {
-    const employee =
-      await prisma.employee.create({
-        data: {
-          employeeCode: "EMP001",
-          firstName: "John",
-          lastName: "Doe",
-          email: "john@example.com",
-          department: "Engineering",
-          country: "India",
-          salary: new Prisma.Decimal(50000),
-        },
-      });
+    const employee = await repository.create({
+      employeeCode: "EMP001",
+      firstName: "John",
+      lastName: "Doe",
+      email: "john@example.com",
+      department: "Engineering",
+      country: "India",
+      salary: 50000,
+      jobTitle: "Senior Software Engineer",
+      currency: "INR",
+      employmentType: "FULL_TIME",
+      dateOfJoining: "2024-01-01",
+    });
 
     const result =
       await repository.findByEmployeeCode(
@@ -115,6 +118,81 @@ describe("PrismaEmployeeRepository", () => {
     const result =
       await repository.findByEmployeeCode(
         "UNKNOWN",
+      );
+
+    expect(result).toBeNull();
+  });
+
+  it("should create employee", async () => {
+    const result = await repository.create({
+      employeeCode: "EMP001",
+      firstName: "John",
+      lastName: "Doe",
+      email: "john@example.com",
+      department: "Engineering",
+      country: "India",
+      salary: 50000,
+      jobTitle: "Senior Software Engineer",
+      currency: "INR",
+      employmentType: "FULL_TIME",
+      dateOfJoining: "2024-01-01",
+    });
+
+    expect(result.id)
+      .toBeDefined();
+
+    expect(result.employeeCode)
+      .toBe("EMP001");
+
+    expect(result.email)
+      .toBe("john@example.com");
+
+    const saved =
+      await prisma.employee.findUnique({
+        where: {
+          email: "john@example.com",
+        },
+      });
+
+    expect(saved).not.toBeNull();
+
+    expect(saved?.employeeCode)
+      .toBe("EMP001");
+  });
+
+  it("should find employee by id", async () => {
+    const employee = await repository.create({
+      employeeCode: "EMP001",
+      firstName: "John",
+      lastName: "Doe",
+      email: "john@example.com",
+      department: "Engineering",
+      country: "India",
+      salary: 50000,
+      jobTitle: "Senior Software Engineer",
+      currency: "INR",
+      employmentType: "FULL_TIME",
+      dateOfJoining: "2024-01-01",
+    });
+
+    const result =
+      await repository.findById(
+        employee.id,
+      );
+
+    expect(result).not.toBeNull();
+
+    expect(result?.id)
+      .toBe(employee.id);
+
+    expect(result?.email)
+      .toBe(employee.email);
+  });
+
+  it("should return null when employee id does not exist", async () => {
+    const result =
+      await repository.findById(
+        crypto.randomUUID(),
       );
 
     expect(result).toBeNull();
