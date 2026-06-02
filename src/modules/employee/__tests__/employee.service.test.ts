@@ -15,6 +15,7 @@ describe("EmployeeService", () => {
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
+      list: jest.fn(),
     };
 
     service = new EmployeeService(repositoryMock);
@@ -332,7 +333,7 @@ describe("EmployeeService", () => {
 
     });
 
-     it("should throw NoFoundError if employee does not exists", async () => {
+    it("should throw NoFoundError if employee does not exists", async () => {
 
       const employeeId = "emp-001";
 
@@ -345,11 +346,63 @@ describe("EmployeeService", () => {
       await expect(
         service.getEmployeeById(employeeId)
       ).rejects.toThrow(NotFoundError);
-      
+
       expect(getEmployeeByIdMockRepository.findById).toHaveBeenCalledWith(employeeId);
     });
 
 
+  });
+
+  describe("Get list of employees", () => {
+
+    it("should return paginated employees", async () => {
+
+      const paginatedResponse = {
+        data: [
+          {
+            id: "1",
+            employeeCode: "EMP001",
+            firstName: "John",
+            lastName: "Doe",
+            email: "john@example.com",
+            country: "India",
+            department: "Engineering",
+            jobTitle: "Software Engineer",
+            salary: 50000,
+            currency: "INR",
+            employmentType: "FULL_TIME",
+            dateOfJoining: new Date(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        total: 1,
+        page: 1,
+        pageSize: 20,
+      };
+
+      const employeeListMockRepository = {
+        ...repositoryMock,
+        list: jest.fn().mockResolvedValue(paginatedResponse),
+      }
+
+      const query = {
+        page: 1,
+        pageSize: 20,
+      };
+
+      const service = new EmployeeService(employeeListMockRepository);
+
+      const result = await service.listEmployees(query);
+
+      expect(employeeListMockRepository.list)
+        .toHaveBeenCalledWith(query);
+
+      expect(result).toEqual(
+        paginatedResponse,
+      );
+
+    })
   });
 
 });

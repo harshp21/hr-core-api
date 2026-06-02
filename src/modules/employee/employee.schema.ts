@@ -33,10 +33,49 @@ export const employeeEntitySchema =
     updatedAt: z.date(),
   });
 
+
+export const listEmployeesQuerySchema =
+  z.object({
+    page: z.coerce.number().int().positive().default(1),
+
+    pageSize: z.coerce.number()
+      .int()
+      .positive()
+      .max(100)
+      .default(20),
+
+    search: z.string().optional(),
+
+    country: z.string().optional(),
+
+    department: z.string().optional(),
+
+    sortBy: z.enum([
+      "firstName",
+      "salary",
+      "dateOfJoining",
+    ]).optional(),
+
+    sortOrder: z.enum([
+      "asc",
+      "desc",
+    ]).optional(),
+  });
+
 export type CreateEmployeeInput =
   z.infer<typeof createEmployeeSchema>;
 
 export type UpdateEmployeeInput =
   z.infer<typeof updateEmployeeSchema>;
+
+export type ListEmployeesQuery =
+  z.infer<typeof listEmployeesQuerySchema>;
+
+export interface PaginatedEmployees {
+  data: Employee[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
 
 export type Employee = z.infer<typeof employeeSchema>;

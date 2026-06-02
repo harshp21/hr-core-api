@@ -1,6 +1,8 @@
 import type {
   CreateEmployeeInput,
   Employee,
+  ListEmployeesQuery,
+  PaginatedEmployees,
 } from "./employee.schema";
 
 export interface EmployeeRepository {
@@ -23,4 +25,8 @@ export interface EmployeeRepository {
   ): Promise<Employee>;
 
   delete(id: string): Promise<void>;
+
+  list(
+    query: ListEmployeesQuery,
+  ): Promise<PaginatedEmployees>;
 }

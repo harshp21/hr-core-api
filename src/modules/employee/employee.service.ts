@@ -1,7 +1,7 @@
 import { ConflictError, NotFoundError } from "@shared/errors/app.error";
 import { EmployeeRepository } from "./employee.repository.interface";
 import { EMPLOYEE_ERROR_CODES } from "@shared/constants/errorCodes";
-import { CreateEmployeeInput, Employee, UpdateEmployeeInput } from "./employee.schema";
+import { CreateEmployeeInput, Employee, ListEmployeesQuery, PaginatedEmployees, UpdateEmployeeInput } from "./employee.schema";
 export class EmployeeService {
   constructor(private readonly repository: EmployeeRepository) { }
 
@@ -49,5 +49,12 @@ export class EmployeeService {
 
   async getEmployeeById(id: string): Promise<Employee> {
     return await this.getExistingEmployee(id);
+  }
+
+
+  async listEmployees(
+    query: ListEmployeesQuery,
+  ): Promise<PaginatedEmployees> {
+    return this.repository.list(query);
   }
 }
