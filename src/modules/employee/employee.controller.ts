@@ -1,3 +1,4 @@
+import { HttpStatus } from "@shared/constants/httpStatus";
 import { EmployeeService } from "./employee.service";
 import { Request, Response } from "express";
 
@@ -16,7 +17,7 @@ export class EmployeeController {
         req.body,
       );
 
-    res.status(201).json(employee);
+    res.status(HttpStatus.CREATED).json(employee);
   }
 
   async getEmployeeById(
@@ -28,7 +29,7 @@ export class EmployeeController {
         req.params.id,
       );
 
-    res.json(employee);
+    res.status(HttpStatus.OK).json(employee);
   }
 
   async updateEmployee(
@@ -41,7 +42,7 @@ export class EmployeeController {
         req.body,
       );
 
-    res.json(employee);
+    res.status(HttpStatus.OK).json(employee);
   }
 
   async deleteEmployee(
@@ -52,6 +53,6 @@ export class EmployeeController {
       req.params.id,
     );
 
-    res.status(204).send();
+    res.status(HttpStatus.NO_CONTENT).send();
   }
 }
