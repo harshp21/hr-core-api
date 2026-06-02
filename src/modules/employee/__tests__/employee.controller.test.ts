@@ -176,4 +176,48 @@ describe("EmployeeController", () => {
     expect(res.send)
       .toHaveBeenCalled();
   });
+
+  it("should return paginated employees", async () => {
+    const response = {
+      data: [
+        {
+          id: "employee-id",
+          employeeCode: "EMP001",
+          firstName: "John",
+          lastName: "Doe",
+          email: "john@example.com",
+        },
+      ],
+      total: 1,
+      page: 1,
+      pageSize: 20,
+    };
+
+    const req = {
+      query: {
+        page: "1",
+        pageSize: "20",
+      },
+    };
+
+    const res = {
+      json: jest.fn(),
+    };
+
+    serviceMock.listEmployees.mockResolvedValue(
+      response as any,
+    );
+
+    await controller.listEmployees(
+      req as any,
+      res as any,
+    );
+
+    expect(
+      serviceMock.listEmployees,
+    ).toHaveBeenCalledWith(req.query);
+
+    expect(res.json)
+      .toHaveBeenCalledWith(response);
+  });
 });

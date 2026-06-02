@@ -55,4 +55,16 @@ export class EmployeeController {
 
     res.status(HttpStatus.NO_CONTENT).send();
   }
+
+  async listEmployees(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    const result =
+      await this.employeeService.listEmployees(
+        req.query as any,
+      );
+
+    res.status(HttpStatus.OK).json(result);
+  }
 }
