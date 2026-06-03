@@ -8,6 +8,11 @@ export const countrySalaryInsightSchema = z.object({
   maximumSalary: z.number(),
 });
 
+export interface JobTitleSalaryInsight {
+  jobTitle: string;
+  averageSalary: number;
+}
+
 export type CountrySalaryInsight = z.infer<
   typeof countrySalaryInsightSchema
 >;

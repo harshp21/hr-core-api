@@ -3,11 +3,10 @@ import { AnalyticsRepository } from "./analytics.repository.interface";
 import { CountrySalaryInsight } from "./analytics.schema";
 
 export class PrismaAnalyticsRepository
-  implements AnalyticsRepository
-{
+  implements AnalyticsRepository {
   constructor(
     private readonly prisma: PrismaClient
-  ) {}
+  ) { }
 
   async getCountrySalaryInsights(): Promise<
     CountrySalaryInsight[]
@@ -55,4 +54,28 @@ export class PrismaAnalyticsRepository
       ),
     }));
   }
+
+  async getJobTitleSalaryInsights(
+    country: string,
+  ) {
+    const result =
+      await this.prisma.employee.groupBy({
+        by: ["jobTitle"],
+        where: {
+          country,
+          isDeleted: false,
+        },
+        _avg: {
+          salary: true,
+        },
+      });
+
+    return result.map((item) => ({
+      jobTitle: item.jobTitle,
+      averageSalary:
+        Number(item._avg.salary) || 0,
+    }));
+  }
+
+  
 }
