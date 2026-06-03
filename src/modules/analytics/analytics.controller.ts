@@ -13,7 +13,7 @@ import { AnalyticsService }
 export class AnalyticsController {
   constructor(
     private readonly analyticsService: AnalyticsService,
-  ) {}
+  ) { }
 
   getCountrySalaryInsights = async (
     req: Request,
@@ -31,6 +31,34 @@ export class AnalyticsController {
           apiResponse(
             insights,
             "Country salary insights retrieved successfully",
+          ),
+        );
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getJobTitleSalaryInsights = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const country =
+        req.query.country as string;
+
+      const insights =
+        await this.analyticsService
+          .getJobTitleSalaryInsights(
+            country,
+          );
+
+      res
+        .status(HttpStatus.OK)
+        .json(
+          apiResponse(
+            insights,
+            "Job title salary insights retrieved successfully",
           ),
         );
     } catch (error) {

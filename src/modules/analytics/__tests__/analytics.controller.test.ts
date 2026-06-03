@@ -16,6 +16,7 @@ describe("AnalyticsController", () => {
   beforeEach(() => {
     serviceMock = {
       getCountrySalaryInsights: jest.fn(),
+      getJobTitleSalaryInsights: jest.fn(),
     } as unknown as jest.Mocked<AnalyticsService>;
 
     controller = new AnalyticsController(
@@ -64,6 +65,59 @@ describe("AnalyticsController", () => {
         apiResponse(
           insights,
           "Country salary insights retrieved successfully",
+        ),
+      );
+  });
+
+  it("should return job title salary insights", async () => {
+    const insights = [
+      {
+        jobTitle: "Software Engineer",
+        averageSalary: 150000,
+      },
+    ];
+
+    const req = {
+      query: {
+        country: "India",
+      },
+    };
+
+    const res: MockResponse = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    const next: NextFunction = jest.fn();
+
+    serviceMock.getJobTitleSalaryInsights
+      .mockResolvedValue(insights);
+
+    const typedReq = req as unknown as Request;
+    const typedRes = res as unknown as Response;
+
+    await controller.getJobTitleSalaryInsights(
+      typedReq,
+      typedRes,
+      next,
+    );
+
+    expect(
+      serviceMock.getJobTitleSalaryInsights,
+    ).toHaveBeenCalledWith(
+      "India",
+    );
+
+    expect(res.status)
+      .toHaveBeenCalledWith(
+        HttpStatus.OK,
+      );
+
+    expect(res.json)
+      .toHaveBeenCalledWith(
+        apiResponse(
+          insights,
+          "Job title salary insights retrieved successfully",
         ),
       );
   });
