@@ -5,8 +5,8 @@ import morgan from "morgan";
 import { env } from "@config/env";
 import { healthModule } from "@modules/health";
 import { errorHandler } from "@shared/middleware/error-handler.middleware";
-import { HttpStatus } from "@shared/constants/httpStatus";
 import { employeeRouter } from "./modules/employee/employee.container";
+import analyticsRoutes from "./modules/analytics/analytics.routes";
 
 const app = express();
 
@@ -20,6 +20,11 @@ app.use("/", healthModule);
 app.use(
   "/api/employees",
   employeeRouter,
+);
+
+app.use(
+  "/api/v1/analytics",
+  analyticsRoutes,
 );
 
 app.use(errorHandler);
