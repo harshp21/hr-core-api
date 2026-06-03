@@ -10,37 +10,31 @@ export const employeeRoutes = (
   // CREATE
   router.post(
     "/",
-    asyncHandler((req, res) => controller.createEmployee(req, res)),
+    asyncHandler(controller.createEmployee),
   );
 
   // LIST
   router.get(
     "/",
-    asyncHandler((req, res) => controller.listEmployees(req, res)),
-  );
-
-  // SALARY INSIGHTS
-  router.get(
-    "/salary-insights",
-    asyncHandler((req, res) => controller.getSalaryInsights(req, res)),
+    asyncHandler(controller.listEmployees),
   );
 
   // READ ONE
   router.get(
     "/:id",
-    asyncHandler((req, res) => controller.getEmployeeById(req, res)),
+    asyncHandler(controller.getEmployeeById),
   );
 
   // UPDATE
   router.put(
     "/:id",
-    asyncHandler((req, res) => controller.updateEmployee(req, res)),
+    asyncHandler(controller.updateEmployee),
   );
 
   // DELETE
   router.delete(
     "/:id",
-    asyncHandler((req, res) => controller.deleteEmployee(req, res)),
+    asyncHandler(controller.deleteEmployee),
   );
 
   return router;

@@ -1,10 +1,30 @@
 import { ConflictError, NotFoundError } from "@shared/errors/app.error";
 import { EmployeeRepository } from "./employee.repository.interface";
 import { ERROR_CODES } from "@shared/constants/errorCodes";
-import { CreateEmployeeInput, ListEmployeesQuery, PaginatedEmployees, SalaryInsights, UpdateEmployeeInput } from "./employee.schema";
+import { CreateEmployeeInput, ListEmployeesQuery, PaginatedEmployees, UpdateEmployeeInput } from "./employee.schema";
 import { Employee } from "./types/employee.types";
 export class EmployeeService {
   constructor(private readonly repository: EmployeeRepository) { }
+
+  private isUniqueConstraintError(error: unknown): error is {
+    code: string;
+    meta?: {
+      target?: string[];
+    };
+  } {
+    if (!error || typeof error !== "object") {
+      return false;
+    }
+
+    const maybeError = error as {
+      code?: unknown;
+      meta?: {
+        target?: unknown;
+      };
+    };
+
+    return maybeError.code === "P2002";
+  }
 
   private async getExistingEmployee(
     id: string,
@@ -34,7 +54,29 @@ export class EmployeeService {
     if (employeeCode) {
       throw new ConflictError(ERROR_CODES.EMPLOYEE.CODE_EXISTS, "Employee code already exists");
     }
-    return this.repository.create(payload);
+    try {
+      return await this.repository.create(payload);
+    } catch (error) {
+      if (this.isUniqueConstraintError(error)) {
+        const target = error.meta?.target ?? [];
+
+        if (target.includes("employeeCode")) {
+          throw new ConflictError(
+            ERROR_CODES.EMPLOYEE.CODE_EXISTS,
+            "Employee code already exists",
+          );
+        }
+
+        if (target.includes("email")) {
+          throw new ConflictError(
+            ERROR_CODES.EMPLOYEE.EMAIL_EXISTS,
+            "Employee email already exists",
+          );
+        }
+      }
+
+      throw error;
+    }
   }
 
   async updateEmployee(id: string, payload: UpdateEmployeeInput): Promise<Employee> {
@@ -57,9 +99,5 @@ export class EmployeeService {
     query: ListEmployeesQuery,
   ): Promise<PaginatedEmployees> {
     return this.repository.list(query);
-  }
-
-  async getSalaryInsights(): Promise<SalaryInsights> {
-    return this.repository.getSalaryInsights();
   }
 }

@@ -53,13 +53,4 @@ export class EmployeeController {
       next(err);
     }
   };
-
-  getSalaryInsights = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = await this.service.getSalaryInsights();
-      res.status(HttpStatus.OK).json(apiResponse(result, "Salary insights retrieved successfully"));
-    } catch (err) {
-      next(err);
-    }
-  };
 }

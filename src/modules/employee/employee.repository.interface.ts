@@ -2,7 +2,6 @@ import type {
   CreateEmployeeInput,
   ListEmployeesQuery,
   PaginatedEmployees,
-  SalaryInsights,
 } from "./employee.schema";
 import { Employee } from "./types/employee.types";
 
@@ -30,6 +29,4 @@ export interface EmployeeRepository {
   list(
     query: ListEmployeesQuery,
   ): Promise<PaginatedEmployees>;
-
-  getSalaryInsights(): Promise<SalaryInsights>;
 }

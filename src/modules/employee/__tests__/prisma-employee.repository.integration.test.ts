@@ -333,44 +333,4 @@ describe("PrismaEmployeeRepository", () => {
     expect(result.page).toBe(2);
   });
 
-  it("should return salary insights", async () => {
-  await repository.create({
-    employeeCode: "EMP001",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john1@mail.com",
-    department: "Engineering",
-    country: "India",
-    salary: 50000,
-    jobTitle: "Dev",
-    currency: "INR",
-    employmentType: "FULL_TIME",
-    dateOfJoining: "2024-01-01",
-  });
-
-  await repository.create({
-    employeeCode: "EMP002",
-    firstName: "Jane",
-    lastName: "Doe",
-    email: "jane@mail.com",
-    department: "Engineering",
-    country: "India",
-    salary: 100000,
-    jobTitle: "Dev",
-    currency: "INR",
-    employmentType: "FULL_TIME",
-    dateOfJoining: "2024-01-01",
-  });
-
-  const result =
-    await repository.getSalaryInsights();
-
-  expect(result.totalEmployees).toBe(2);
-
-  expect(result.totalSalaryExpense)
-    .toBe(150000);
-
-  expect(result.averageSalary)
-    .toBe(75000);
-});
 });

@@ -72,15 +72,6 @@ export type ListEmployeesQuery =
   z.infer<typeof listEmployeesQuerySchema>;
 
 
-export type SalaryInsights = {
-  totalEmployees: number;
-  averageSalary: number;
-  minSalary: number;
-  maxSalary: number;
-  totalSalaryExpense: number;
-};
-
-
 export type ListEmployeesResponse = {
   data: Employee[];
   total: number;
@@ -95,12 +86,5 @@ export interface PaginatedEmployees {
   page: number;
   pageSize: number;
 }
-
-export interface SalaryInsights {
-  totalEmployees: number;
-  totalPayroll: number;
-  averageSalary: number;
-}
-
 
 export type Employee = z.infer<typeof employeeSchema>;

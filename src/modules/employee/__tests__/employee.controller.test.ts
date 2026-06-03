@@ -1,5 +1,7 @@
+import { HttpStatus } from "@shared/constants/httpStatus";
 import { EmployeeController } from "../employee.controller";
 import { EmployeeService } from "../employee.service";
+import { apiResponse } from "@shared/utils/apiResponse";
 
 describe("EmployeeController", () => {
   let serviceMock: jest.Mocked<EmployeeService>;
@@ -12,7 +14,6 @@ describe("EmployeeController", () => {
       updateEmployee: jest.fn(),
       deleteEmployee: jest.fn(),
       listEmployees: jest.fn(),
-      getSalaryInsights: jest.fn(),
     } as unknown as jest.Mocked<EmployeeService>;
 
     controller = new EmployeeController(
@@ -42,6 +43,7 @@ describe("EmployeeController", () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
+    const next = jest.fn();
 
     serviceMock.createEmployee.mockResolvedValue(
       employee as any,
@@ -50,6 +52,7 @@ describe("EmployeeController", () => {
     await controller.createEmployee(
       req as any,
       res as any,
+      next as any,
     );
 
     expect(
@@ -57,10 +60,12 @@ describe("EmployeeController", () => {
     ).toHaveBeenCalledWith(req.body);
 
     expect(res.status)
-      .toHaveBeenCalledWith(201);
+      .toHaveBeenCalledWith(HttpStatus.CREATED);
 
     expect(res.json)
-      .toHaveBeenCalledWith(employee);
+      .toHaveBeenCalledWith(
+        apiResponse(employee, "Employee created successfully"),
+      );
   });
 
   it("should return employee by id", async () => {
@@ -79,8 +84,10 @@ describe("EmployeeController", () => {
     };
 
     const res = {
+      status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
+    const next = jest.fn();
 
     serviceMock.getEmployeeById
       .mockResolvedValue(employee as any);
@@ -88,6 +95,7 @@ describe("EmployeeController", () => {
     await controller.getEmployeeById(
       req as any,
       res as any,
+      next as any,
     );
 
     expect(
@@ -96,8 +104,13 @@ describe("EmployeeController", () => {
       "employee-id",
     );
 
+    expect(res.status)
+      .toHaveBeenCalledWith(HttpStatus.OK);
+
     expect(res.json)
-      .toHaveBeenCalledWith(employee);
+      .toHaveBeenCalledWith(
+        apiResponse(employee, "Employee retrieved successfully"),
+      );
   });
 
   it("should update employee and return updated employee", async () => {
@@ -120,8 +133,10 @@ describe("EmployeeController", () => {
     };
 
     const res = {
+      status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
+    const next = jest.fn();
 
     serviceMock.updateEmployee.mockResolvedValue(
       updatedEmployee as any,
@@ -130,6 +145,7 @@ describe("EmployeeController", () => {
     await controller.updateEmployee(
       req as any,
       res as any,
+      next as any,
     );
 
     expect(
@@ -139,8 +155,13 @@ describe("EmployeeController", () => {
       req.body,
     );
 
+    expect(res.status)
+      .toHaveBeenCalledWith(HttpStatus.OK);
+
     expect(res.json)
-      .toHaveBeenCalledWith(updatedEmployee);
+      .toHaveBeenCalledWith(
+        apiResponse(updatedEmployee, "Employee updated successfully"),
+      );
   });
 
   it("should delete employee and return 204", async () => {
@@ -152,8 +173,9 @@ describe("EmployeeController", () => {
 
     const res = {
       status: jest.fn().mockReturnThis(),
-      send: jest.fn(),
+      json: jest.fn(),
     };
+    const next = jest.fn();
 
     serviceMock.deleteEmployee.mockResolvedValue(
       undefined,
@@ -162,6 +184,7 @@ describe("EmployeeController", () => {
     await controller.deleteEmployee(
       req as any,
       res as any,
+      next as any,
     );
 
     expect(
@@ -171,10 +194,12 @@ describe("EmployeeController", () => {
     );
 
     expect(res.status)
-      .toHaveBeenCalledWith(204);
+      .toHaveBeenCalledWith(HttpStatus.NO_CONTENT);
 
-    expect(res.send)
-      .toHaveBeenCalled();
+    expect(res.json)
+      .toHaveBeenCalledWith(
+        apiResponse(null, "Employee deleted successfully"),
+      );
   });
 
   it("should return paginated employees", async () => {
@@ -201,8 +226,10 @@ describe("EmployeeController", () => {
     };
 
     const res = {
+      status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
+    const next = jest.fn();
 
     serviceMock.listEmployees.mockResolvedValue(
       response as any,
@@ -211,45 +238,20 @@ describe("EmployeeController", () => {
     await controller.listEmployees(
       req as any,
       res as any,
+      next as any,
     );
 
     expect(
       serviceMock.listEmployees,
     ).toHaveBeenCalledWith(req.query);
 
-    expect(res.json)
-      .toHaveBeenCalledWith(response);
-  });
-
-  it("should return salary insights", async () => {
-    const insights = {
-      totalEmployees: 10000,
-      totalPayroll: 800000000,
-      averageSalary: 80000,
-      highestSalary: 250000,
-      lowestSalary: 30000,
-    };
-
-    const req = {};
-
-    const res = {
-      json: jest.fn(),
-    };
-
-    serviceMock.getSalaryInsights.mockResolvedValue(
-      insights as any,
-    );
-
-    await controller.getSalaryInsights(
-      req as any,
-      res as any,
-    );
-
-    expect(
-      serviceMock.getSalaryInsights,
-    ).toHaveBeenCalled();
+    expect(res.status)
+      .toHaveBeenCalledWith(HttpStatus.OK);
 
     expect(res.json)
-      .toHaveBeenCalledWith(insights);
+      .toHaveBeenCalledWith(
+        apiResponse(response, "Employees retrieved successfully"),
+      );
   });
+
 });

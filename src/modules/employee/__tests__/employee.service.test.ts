@@ -1,6 +1,7 @@
 import { ConflictError, NotFoundError } from "@shared/errors/app.error";
 import { EmployeeService } from "../employee.service";
 import { EmployeeRepository } from "../employee.repository.interface";
+import { ERROR_CODES } from "@shared/constants/errorCodes";
 
 describe("EmployeeService", () => {
 
@@ -16,7 +17,6 @@ describe("EmployeeService", () => {
       update: jest.fn(),
       delete: jest.fn(),
       list: jest.fn(),
-      getSalaryInsights: jest.fn(),
     };
 
     service = new EmployeeService(repositoryMock);
@@ -139,6 +139,44 @@ describe("EmployeeService", () => {
       ).rejects.toThrow(ConflictError);
 
       expect(createRepositoryMock.create).not.toHaveBeenCalled();
+    });
+
+    it("should throw conflict error when repository create fails with duplicate employee code", async () => {
+      const employeePayload = {
+        employeeCode: "EMP001",
+        firstName: "John",
+        lastName: "Doe",
+        email: "john.doe@example.com",
+        country: "India",
+        department: "Engineering",
+        jobTitle: "Software Engineer",
+        salary: 50000,
+        currency: "INR",
+        employmentType: "FULL_TIME",
+        dateOfJoining: "2024-01-01",
+      };
+
+      const duplicateCodeError = {
+        code: "P2002",
+        meta: {
+          target: ["employeeCode"],
+        },
+      };
+
+      const createRepositoryMock = {
+        ...repositoryMock,
+        findByEmail: jest.fn().mockResolvedValue(null),
+        findByEmployeeCode: jest.fn().mockResolvedValue(null),
+        create: jest.fn().mockRejectedValue(duplicateCodeError),
+      };
+
+      const service = new EmployeeService(createRepositoryMock);
+
+      await expect(
+        service.createEmployee(employeePayload),
+      ).rejects.toMatchObject({
+        errorCode: ERROR_CODES.EMPLOYEE.CODE_EXISTS,
+      });
     });
 
   });
@@ -404,30 +442,6 @@ describe("EmployeeService", () => {
       );
 
     })
-  });
-
-  describe("Get salary insights", () => {
-
-    it("should return salary insights", async () => {
-      const insights = {
-        totalEmployees: 10000,
-        totalPayroll: 800000000,
-        averageSalary: 80000,
-      };
-
-      repositoryMock.getSalaryInsights.mockResolvedValue(
-        insights,
-      );
-
-      const result =
-        await service.getSalaryInsights();
-
-      expect(
-        repositoryMock.getSalaryInsights,
-      ).toHaveBeenCalled();
-
-      expect(result).toEqual(insights);
-    });
   });
 
 });
