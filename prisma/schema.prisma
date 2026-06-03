@@ -8,25 +8,21 @@ datasource db {
 }
 
 model Employee {
-  id              String   @id @default(uuid())
+  id             String   @id @default(uuid())
+  employeeCode   String   @unique
+  email          String   @unique
+  firstName      String
+  lastName       String
+  country        String
+  department     String
+  jobTitle       String
+  salary         Decimal
+  currency       String
+  employmentType String
+  dateOfJoining  DateTime
 
-  employeeCode    String   @unique
-  firstName       String
-  lastName        String
-  email           String   @unique
+  isDeleted      Boolean  @default(false)
 
-  department      String
-  country         String
-
-  jobTitle        String
-  currency        String
-  employmentType  String
-  dateOfJoining   DateTime
-
-  salary          Decimal @db.Decimal(12,2)
-
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@index([country, department])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

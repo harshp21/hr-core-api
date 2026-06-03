@@ -12,6 +12,47 @@ export class PrismaAnalyticsRepository
   async getCountrySalaryInsights(): Promise<
     CountrySalaryInsight[]
   > {
-    return [];
+    const groupedEmployees =
+      await this.prisma.employee.groupBy({
+        by: ["country"],
+
+        where: {
+          isDeleted: false,
+        },
+
+        _count: {
+          id: true,
+        },
+
+        _avg: {
+          salary: true,
+        },
+
+        _min: {
+          salary: true,
+        },
+
+        _max: {
+          salary: true,
+        },
+      });
+
+    return groupedEmployees.map((group) => ({
+      country: group.country,
+
+      employeeCount: group._count.id,
+
+      averageSalary: Number(
+        group._avg.salary ?? 0
+      ),
+
+      minimumSalary: Number(
+        group._min.salary ?? 0
+      ),
+
+      maximumSalary: Number(
+        group._max.salary ?? 0
+      ),
+    }));
   }
 }

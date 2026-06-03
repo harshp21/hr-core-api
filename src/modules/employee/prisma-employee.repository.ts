@@ -14,16 +14,15 @@ export class PrismaEmployeeRepository
     email: string,
   ): Promise<Employee | null> {
     return this.prisma.employee.findUnique({
-      where: { email },
+      where: { email, isDeleted: false },
     });
   }
 
-  async findById(
-    id: string,
-  ): Promise<Employee | null> {
-    return this.prisma.employee.findUnique({
+  async findById(id: string) {
+    return this.prisma.employee.findFirst({
       where: {
         id,
+        isDeleted: false,
       },
     });
   }
@@ -34,6 +33,7 @@ export class PrismaEmployeeRepository
     return this.prisma.employee.findUnique({
       where: {
         employeeCode,
+        isDeleted: false,
       },
     });
   }
@@ -72,12 +72,11 @@ export class PrismaEmployeeRepository
     });
   }
 
-  async delete(
-    id: string,
-  ): Promise<void> {
-    await this.prisma.employee.delete({
-      where: {
-        id,
+  async delete(id: string): Promise<Employee> {
+    return this.prisma.employee.update({
+      where: { id },
+      data: {
+        isDeleted: true,
       },
     });
   }
@@ -90,7 +89,9 @@ export class PrismaEmployeeRepository
 
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: any = {
+      isDeleted: false,
+    };
 
     if (query.department) {
       where.department = query.department;

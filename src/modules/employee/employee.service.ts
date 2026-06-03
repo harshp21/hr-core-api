@@ -84,7 +84,7 @@ export class EmployeeService {
     return this.repository.update(id, payload);
   }
 
-  async deleteEmployee(id: string): Promise<void> {
+  async deleteEmployee(id: string): Promise<Employee> {
     await this.getExistingEmployee(id);
     return this.repository.delete(id);
   }

@@ -1,4 +1,5 @@
 import { HttpStatus } from "@shared/constants/httpStatus";
+import { NextFunction, Request, Response } from "express";
 import { EmployeeController } from "../employee.controller";
 import { EmployeeService } from "../employee.service";
 import { apiResponse } from "@shared/utils/apiResponse";
@@ -6,6 +7,11 @@ import { apiResponse } from "@shared/utils/apiResponse";
 describe("EmployeeController", () => {
   let serviceMock: jest.Mocked<EmployeeService>;
   let controller: EmployeeController;
+
+  type MockResponse = {
+    status: jest.Mock;
+    json: jest.Mock;
+  };
 
   beforeEach(() => {
     serviceMock = {
@@ -46,13 +52,18 @@ describe("EmployeeController", () => {
     const next = jest.fn();
 
     serviceMock.createEmployee.mockResolvedValue(
-      employee as any,
+      employee as Awaited<
+        ReturnType<EmployeeService["createEmployee"]>
+      >,
     );
 
+    const typedReq = req as unknown as Request;
+    const typedRes = res as unknown as Response;
+
     await controller.createEmployee(
-      req as any,
-      res as any,
-      next as any,
+      typedReq,
+      typedRes,
+      next,
     );
 
     expect(
@@ -83,19 +94,24 @@ describe("EmployeeController", () => {
       },
     };
 
-    const res = {
+    const res: MockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    const next = jest.fn();
+    const next: NextFunction = jest.fn();
 
     serviceMock.getEmployeeById
-      .mockResolvedValue(employee as any);
+      .mockResolvedValue(employee as Awaited<
+        ReturnType<EmployeeService["getEmployeeById"]>
+      >);
+
+    const typedReq = req as unknown as Request;
+    const typedRes = res as unknown as Response;
 
     await controller.getEmployeeById(
-      req as any,
-      res as any,
-      next as any,
+      typedReq,
+      typedRes,
+      next,
     );
 
     expect(
@@ -132,20 +148,25 @@ describe("EmployeeController", () => {
       },
     };
 
-    const res = {
+    const res: MockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    const next = jest.fn();
+    const next: NextFunction = jest.fn();
 
     serviceMock.updateEmployee.mockResolvedValue(
-      updatedEmployee as any,
+      updatedEmployee as unknown as Awaited<
+        ReturnType<EmployeeService["updateEmployee"]>
+      >,
     );
 
+    const typedReq = req as unknown as Request;
+    const typedRes = res as unknown as Response;
+
     await controller.updateEmployee(
-      req as any,
-      res as any,
-      next as any,
+      typedReq,
+      typedRes,
+      next,
     );
 
     expect(
@@ -171,20 +192,25 @@ describe("EmployeeController", () => {
       },
     };
 
-    const res = {
+    const res: MockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    const next = jest.fn();
+    const next: NextFunction = jest.fn();
 
     serviceMock.deleteEmployee.mockResolvedValue(
-      undefined,
+      {} as Awaited<
+        ReturnType<EmployeeService["deleteEmployee"]>
+      >,
     );
 
+    const typedReq = req as unknown as Request;
+    const typedRes = res as unknown as Response;
+
     await controller.deleteEmployee(
-      req as any,
-      res as any,
-      next as any,
+      typedReq,
+      typedRes,
+      next,
     );
 
     expect(
@@ -225,20 +251,25 @@ describe("EmployeeController", () => {
       },
     };
 
-    const res = {
+    const res: MockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    const next = jest.fn();
+    const next: NextFunction = jest.fn();
 
     serviceMock.listEmployees.mockResolvedValue(
-      response as any,
+      response as unknown as Awaited<
+        ReturnType<EmployeeService["listEmployees"]>
+      >,
     );
 
+    const typedReq = req as unknown as Request;
+    const typedRes = res as unknown as Response;
+
     await controller.listEmployees(
-      req as any,
-      res as any,
-      next as any,
+      typedReq,
+      typedRes,
+      next,
     );
 
     expect(

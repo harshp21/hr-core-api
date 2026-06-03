@@ -263,7 +263,8 @@ describe("EmployeeService", () => {
   });
 
   describe("Delete Employee", () => {
-    it("Should be able to delete employee", async () => {
+
+    it("should soft delete employee", async () => {
 
       const employeeId = "emp-001";
 
@@ -289,9 +290,7 @@ describe("EmployeeService", () => {
       };
       const service = new EmployeeService(deleteEmployeeMockRepo);
 
-      await service.deleteEmployee(
-        employeeId
-      );
+      await service.deleteEmployee(employeeId);
 
       expect(deleteEmployeeMockRepo.findById).toHaveBeenCalledWith(
         employeeId
@@ -300,7 +299,6 @@ describe("EmployeeService", () => {
       expect(deleteEmployeeMockRepo.delete).toHaveBeenCalledWith(
         employeeId
       );
-
     });
 
 

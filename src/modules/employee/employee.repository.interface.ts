@@ -24,7 +24,7 @@ export interface EmployeeRepository {
     updatePayload: Partial<CreateEmployeeInput>,
   ): Promise<Employee>;
 
-  delete(id: string): Promise<void>;
+  delete(id: string): Promise<Employee>;
 
   list(
     query: ListEmployeesQuery,
