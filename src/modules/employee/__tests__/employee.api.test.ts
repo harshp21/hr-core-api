@@ -10,7 +10,7 @@ describe("Employee API", () => {
     const suffix = unique();
 
     const response = await request(app)
-      .post("/api/employees")
+      .post("/api/v1/employees")
       .send({
         employeeCode: `EMP-${suffix}`,
         firstName: "John",
@@ -33,7 +33,7 @@ describe("Employee API", () => {
   const suffix = unique();
 
   const createRes = await request(app)
-    .post("/api/employees")
+    .post("/api/v1/employees")
     .send({
       employeeCode: `EMP-${suffix}`,
       firstName: "Jane",
@@ -51,7 +51,7 @@ describe("Employee API", () => {
     const id = createRes.body.data.id;
 
     const res = await request(app).get(
-      `/api/employees/${id}`,
+      `/api/v1/employees/${id}`,
     );
 
     expect(res.status).toBe(200);
@@ -62,7 +62,7 @@ describe("Employee API", () => {
   const suffix = unique();
 
   const createRes = await request(app)
-    .post("/api/employees")
+    .post("/api/v1/employees")
     .send({
       employeeCode: `EMP-${suffix}`,
       firstName: "Mark",
@@ -80,7 +80,7 @@ describe("Employee API", () => {
     const id = createRes.body.data.id;
 
     const deleteRes = await request(app)
-      .delete(`/api/employees/${id}`);
+      .delete(`/api/v1/employees/${id}`);
 
     expect(deleteRes.status).toBe(HttpStatus.NO_CONTENT);
   });
@@ -88,7 +88,7 @@ describe("Employee API", () => {
   it("should list employees via API", async () => {
   const suffix = unique();
 
-  await request(app).post("/api/employees").send({
+  await request(app).post("/api/v1/employees").send({
     employeeCode: `EMP-${suffix}`,
     firstName: "A",
     lastName: "B",
@@ -103,7 +103,7 @@ describe("Employee API", () => {
   });
 
   const res = await request(app)
-    .get("/api/employees?page=1&limit=10");
+    .get("/api/v1/employees?page=1&limit=10");
 
   expect(res.status).toBe(HttpStatus.OK);
   expect(res.body.data.data.length).toBeGreaterThan(0);
@@ -114,7 +114,7 @@ describe("Employee API", () => {
     const employeeCode = `EMP-${suffix}`;
 
     await request(app)
-      .post("/api/employees")
+      .post("/api/v1/employees")
       .send({
         employeeCode,
         firstName: "John",
@@ -130,7 +130,7 @@ describe("Employee API", () => {
       });
 
     const response = await request(app)
-      .post("/api/employees")
+      .post("/api/v1/employees")
       .send({
         employeeCode,
         firstName: "Jane",

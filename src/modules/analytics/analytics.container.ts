@@ -18,7 +18,7 @@ const repository =
 const service =
   new AnalyticsService(repository);
 
-export const analyticsController =
+const analyticsController =
   new AnalyticsController(service);
 
 export const analyticsRouter =
