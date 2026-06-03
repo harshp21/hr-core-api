@@ -1,28 +1,17 @@
 import { Router } from "express";
 
-import { AnalyticsController } from "./analytics.controller";
-import { AnalyticsService } from "./analytics.service";
-import { prisma } from "../../lib/prisma";
-import { PrismaAnalyticsRepository } from "./prisma-analytics.repository";
+import { AnalyticsController }
+  from "./analytics.controller";
 
-const router = Router();
+export const analyticsRoutes = (
+  controller: AnalyticsController,
+) => {
+  const router = Router();
 
-const analyticsRepository =
-  new PrismaAnalyticsRepository(prisma);
-
-const analyticsService =
-  new AnalyticsService(
-    analyticsRepository,
+  router.get(
+    "/countries",
+    controller.getCountrySalaryInsights,
   );
 
-const analyticsController =
-  new AnalyticsController(
-    analyticsService,
-  );
-
-router.get(
-  "/countries",
-  analyticsController.getCountrySalaryInsights,
-);
-
-export default router;
+  return router;
+};
