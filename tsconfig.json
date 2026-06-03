@@ -24,7 +24,8 @@
     "paths": {
       "@config/*": ["config/*"],
       "@modules/*": ["modules/*"],
-      "@shared/*": ["shared/*"]
+      "@shared/*": ["shared/*"],
+      "@src/*": ["src/*"]
     }
   },
   "include": ["src"],

@@ -7,7 +7,8 @@ const config: Config = {
   moduleNameMapper: {
     "^@config/(.*)$": "<rootDir>/src/config/$1",
     "^@modules/(.*)$": "<rootDir>/src/modules/$1",
-    "^@shared/(.*)$": "<rootDir>/src/shared/$1"
+    "^@shared/(.*)$": "<rootDir>/src/shared/$1",
+    "^@src/(.*)$": "<rootDir>/src/$1",
   },
   moduleFileExtensions: ["ts", "js", "json"],
   collectCoverage: false,
