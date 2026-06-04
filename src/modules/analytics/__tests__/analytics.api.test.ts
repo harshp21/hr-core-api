@@ -78,4 +78,28 @@ describe("Analytics API", () => {
       expect(response.body.data).toEqual([]);
     });
   });
+
+
+  describe(
+    "GET /api/v1/analytics/departments",
+    () => {
+      it(
+        "should return department salary insights",
+        async () => {
+          const response =
+            await request(app).get(
+              "/api/v1/analytics/departments",
+            );
+
+          expect(response.status).toBe(200);
+
+          expect(
+            Array.isArray(
+              response.body.data,
+            ),
+          ).toBe(true);
+        },
+      );
+    },
+  );
 });

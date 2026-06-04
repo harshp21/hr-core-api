@@ -18,5 +18,10 @@ export const analyticsRoutes = (
     controller.getJobTitleSalaryInsights,
   );
 
+  router.get(
+    "/departments",
+    controller.getDepartmentInsights,
+  );
+
   return router;
 };
