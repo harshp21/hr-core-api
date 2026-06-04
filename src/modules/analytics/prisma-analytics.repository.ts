@@ -77,5 +77,26 @@ export class PrismaAnalyticsRepository
     }));
   }
 
-  
+  public async getDepartmentInsights() {
+    const result =
+      await this.prisma.employee.groupBy({
+        by: ["department"],
+        where: {
+          isDeleted: false,
+        },
+        _avg: {
+          salary: true,
+        },
+        _count: {
+          id: true,
+        },
+      });
+
+    return result.map((item) => ({
+      department: item.department,
+      averageSalary:
+        Number(item._avg.salary) || 0,
+      employeeCount: item._count.id,
+    }));
+  }
 }

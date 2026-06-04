@@ -213,4 +213,47 @@ describe("AnalyticsRepository", () => {
 
     expect(result).toEqual([]);
   });
+
+  it("should return salary insights grouped by department", async () => {
+    await prisma.employee.createMany({
+      data: [
+        {
+          employeeCode: "EMP-DEPT-1",
+          firstName: "John",
+          lastName: "Doe",
+          email: "dept1@test.com",
+          country: "India",
+          department: "Engineering",
+          jobTitle: "Software Engineer",
+          salary: 100000,
+          currency: "USD",
+          employmentType: "FULL_TIME",
+          dateOfJoining: new Date(),
+        },
+        {
+          employeeCode: "EMP-DEPT-2",
+          firstName: "Jane",
+          lastName: "Doe",
+          email: "dept2@test.com",
+          country: "India",
+          department: "Engineering",
+          jobTitle: "Senior Engineer",
+          salary: 200000,
+          currency: "USD",
+          employmentType: "FULL_TIME",
+          dateOfJoining: new Date(),
+        },
+      ],
+    });
+
+    const result =
+      await repository.getDepartmentInsights();
+
+    expect(result).toHaveLength(1);
+
+    expect(result[0]).toMatchObject({
+      department: "Engineering",
+      employeeCount: 2,
+    });
+  });
 });
