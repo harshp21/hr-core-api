@@ -227,6 +227,26 @@
             },
             "description": "Returns average salary grouped by job title for the provided country."
           }
+        },
+        {
+          "name": "Department Salary Insights",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/departments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "departments"
+              ]
+            },
+            "description": "Returns salary insights grouped by department."
+          }
         }
       ]
     }
