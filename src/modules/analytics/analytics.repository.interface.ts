@@ -1,4 +1,4 @@
-import { JobTitleSalaryInsight } from "./analytics.schema";
+import { DepartmentSalaryInsight, JobTitleSalaryInsight } from "./analytics.schema";
 import { CountrySalaryInsight } from "./analytics.types";
 
 export interface AnalyticsRepository {
@@ -9,4 +9,8 @@ export interface AnalyticsRepository {
   getJobTitleSalaryInsights(
     country: string,
   ): Promise<JobTitleSalaryInsight[]>;
+
+  getDepartmentInsights(): Promise<
+    DepartmentSalaryInsight[]
+  >;
 }

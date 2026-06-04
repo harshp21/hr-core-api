@@ -17,4 +17,8 @@ export class AnalyticsService {
         country,
       );
   }
+
+  async getDepartmentInsights() {
+    return this.analyticsRepository.getDepartmentInsights();
+  }
 }

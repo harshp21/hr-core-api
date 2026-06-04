@@ -12,6 +12,11 @@ export interface JobTitleSalaryInsight {
   jobTitle: string;
   averageSalary: number;
 }
+export interface DepartmentSalaryInsight {
+  department: string;
+  averageSalary: number;
+  employeeCount: number;
+}
 
 export type CountrySalaryInsight = z.infer<
   typeof countrySalaryInsightSchema
