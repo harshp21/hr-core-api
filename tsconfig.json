@@ -4,8 +4,10 @@
     "module": "commonjs",
     "lib": ["ES2020"],
     "moduleResolution": "node",
-    "rootDir": "./src",
+
+    "rootDir": ".",
     "outDir": "./dist",
+
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -13,13 +15,16 @@
     "strictPropertyInitialization": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
+
     "types": ["node", "jest"],
+
     "baseUrl": "./src",
     "paths": {
       "@config/*": ["config/*"],
@@ -28,6 +33,12 @@
       "@src/*": ["src/*"]
     }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src",
+    "prisma/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
