@@ -65,4 +65,24 @@ export class AnalyticsController {
       next(error);
     }
   };
+
+  public getDepartmentInsights = async (
+    _req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const insights =
+        await this.analyticsService.getDepartmentInsights();
+
+      res.status(HttpStatus.OK).json(
+        apiResponse(
+          insights,
+          "Department salary insights retrieved successfully",
+        ),
+      );
+    } catch (error) {
+      next(error);
+    }
+  };
 }
