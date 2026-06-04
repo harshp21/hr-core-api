@@ -206,24 +206,29 @@ describe("AnalyticsRepository", () => {
   });
 
   it("should return empty array when country has no employees", async () => {
+    const country = `NO-EMPLOYEES-${Date.now()}`;
+
     const result =
       await repository.getJobTitleSalaryInsights(
-        "India",
+        country,
       );
 
     expect(result).toEqual([]);
   });
 
   it("should return salary insights grouped by department", async () => {
+    const suffix = Date.now();
+    const department = `Engineering-${suffix}`;
+
     await prisma.employee.createMany({
       data: [
         {
-          employeeCode: "EMP-DEPT-1",
+          employeeCode: `EMP-DEPT-${suffix}-1`,
           firstName: "John",
           lastName: "Doe",
-          email: "dept1@test.com",
+          email: `dept1-${suffix}@test.com`,
           country: "India",
-          department: "Engineering",
+          department,
           jobTitle: "Software Engineer",
           salary: 100000,
           currency: "USD",
@@ -231,12 +236,12 @@ describe("AnalyticsRepository", () => {
           dateOfJoining: new Date(),
         },
         {
-          employeeCode: "EMP-DEPT-2",
+          employeeCode: `EMP-DEPT-${suffix}-2`,
           firstName: "Jane",
           lastName: "Doe",
-          email: "dept2@test.com",
+          email: `dept2-${suffix}@test.com`,
           country: "India",
-          department: "Engineering",
+          department,
           jobTitle: "Senior Engineer",
           salary: 200000,
           currency: "USD",
@@ -249,11 +254,14 @@ describe("AnalyticsRepository", () => {
     const result =
       await repository.getDepartmentInsights();
 
-    expect(result).toHaveLength(1);
+    const departmentInsight = result.find(
+      (item) => item.department === department,
+    );
 
-    expect(result[0]).toMatchObject({
-      department: "Engineering",
+    expect(departmentInsight).toMatchObject({
+      department,
       employeeCount: 2,
+      averageSalary: 150000,
     });
   });
 });
