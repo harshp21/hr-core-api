@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { healthRouter } from "./health.route";
+import { Router } from 'express';
+import { healthRouter } from './health.route';
 
 export const healthModule = Router();
 
-healthModule.use("/health", healthRouter);
+healthModule.use('/health', healthRouter);

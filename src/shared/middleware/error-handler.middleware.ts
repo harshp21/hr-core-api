@@ -1,20 +1,16 @@
-import { Request } from "express";
-import { Response } from "express";
-import { NextFunction } from "express";
+import { NextFunction, Request, Response } from 'express';
 
-import { AppError }
-  from "../errors/app.error";
-import { ERROR_CODES } from "@shared/constants/errorCodes";
-import z, { ZodError } from "zod";
-import { HttpStatus } from "@shared/constants/httpStatus";
+import { AppError } from '../errors/app.error';
+import { ERROR_CODES } from '@shared/constants/errorCodes';
+import { ZodError } from 'zod';
+import { HttpStatus } from '@shared/constants/httpStatus';
 
 export function errorHandler(
   error: Error,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction
 ): void {
-
   if (error instanceof AppError) {
     res.status(error.statusCode).json({
       code: error.errorCode,
@@ -26,10 +22,10 @@ export function errorHandler(
 
   if (error instanceof ZodError) {
     res.status(HttpStatus.BAD_REQUEST).json({
-      code: "VALIDATION_ERROR",
-      message: "Validation failed",
-      errors: error.issues.map(issue => ({
-        field: issue.path.join("."),
+      code: 'VALIDATION_ERROR',
+      message: 'Validation failed',
+      errors: error.issues.map((issue) => ({
+        field: issue.path.join('.'),
         message: issue.message,
       })),
     });
@@ -39,7 +35,6 @@ export function errorHandler(
 
   res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
     code: ERROR_CODES.SYSTEM.INTERNAL,
-    message: "Internal server error",
+    message: 'Internal server error',
   });
-
 }

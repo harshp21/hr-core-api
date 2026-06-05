@@ -1,4 +1,3 @@
-import { Employee as PrismaEmployee }
-  from "@prisma/client";
+import { Employee as PrismaEmployee } from '@prisma/client';
 
 export type Employee = PrismaEmployee;

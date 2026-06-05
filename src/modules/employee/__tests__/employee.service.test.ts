@@ -1,12 +1,10 @@
-import { ConflictError, NotFoundError } from "@shared/errors/app.error";
-import { EmployeeService } from "../employee.service";
-import { EmployeeRepository } from "../employee.repository.interface";
-import { ERROR_CODES } from "@shared/constants/errorCodes";
+import { ConflictError, NotFoundError } from '@shared/errors/app.error';
+import { EmployeeService } from '../employee.service';
+import { EmployeeRepository } from '../employee.repository.interface';
+import { ERROR_CODES } from '@shared/constants/errorCodes';
 
-describe("EmployeeService", () => {
-
+describe('EmployeeService', () => {
   let repositoryMock: jest.Mocked<EmployeeRepository>;
-  let service: EmployeeService;
 
   beforeEach(() => {
     repositoryMock = {
@@ -18,29 +16,26 @@ describe("EmployeeService", () => {
       delete: jest.fn(),
       list: jest.fn(),
     };
-
-    service = new EmployeeService(repositoryMock);
   });
 
-  describe("Create Employee", () => {
-
-    it("should create an employee successfully", async () => {
+  describe('Create Employee', () => {
+    it('should create an employee successfully', async () => {
       const employeePayload = {
-        employeeCode: "EMP001",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        country: "India",
-        department: "Engineering",
-        jobTitle: "Software Engineer",
+        employeeCode: 'EMP001',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        country: 'India',
+        department: 'Engineering',
+        jobTitle: 'Software Engineer',
         salary: 50000,
-        currency: "INR",
-        employmentType: "FULL_TIME",
-        dateOfJoining: "2024-01-01",
+        currency: 'INR',
+        employmentType: 'FULL_TIME',
+        dateOfJoining: '2024-01-01',
       };
 
       const createdEmployee = {
-        id: "employee-id",
+        id: 'employee-id',
         ...employeePayload,
       };
 
@@ -56,12 +51,10 @@ describe("EmployeeService", () => {
 
       const result = await service.createEmployee(employeePayload);
 
-      expect(createRepositoryMock.findByEmail).toHaveBeenCalledWith(
-        employeePayload.email,
-      );
+      expect(createRepositoryMock.findByEmail).toHaveBeenCalledWith(employeePayload.email);
 
       expect(createRepositoryMock.findByEmployeeCode).toHaveBeenCalledWith(
-        employeePayload.employeeCode,
+        employeePayload.employeeCode
       );
 
       expect(createRepositoryMock.create).toHaveBeenCalled();
@@ -69,24 +62,24 @@ describe("EmployeeService", () => {
       expect(result).toEqual(createdEmployee);
     });
 
-    it("should throw an error when email already exists", async () => {
+    it('should throw an error when email already exists', async () => {
       const employeePayload = {
-        employeeCode: "EMP001",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        country: "India",
-        department: "Engineering",
-        jobTitle: "Software Engineer",
+        employeeCode: 'EMP001',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        country: 'India',
+        department: 'Engineering',
+        jobTitle: 'Software Engineer',
         salary: 50000,
-        currency: "INR",
-        employmentType: "FULL_TIME",
-        dateOfJoining: "2024-01-01",
+        currency: 'INR',
+        employmentType: 'FULL_TIME',
+        dateOfJoining: '2024-01-01',
       };
 
       const existingEmployee = {
-        id: "existing-id",
-        email: "john.doe@example.com",
+        id: 'existing-id',
+        email: 'john.doe@example.com',
       };
 
       const createRepositoryMock = {
@@ -98,31 +91,29 @@ describe("EmployeeService", () => {
 
       const service = new EmployeeService(createRepositoryMock);
 
-      await expect(
-        service.createEmployee(employeePayload),
-      ).rejects.toThrow(ConflictError);
+      await expect(service.createEmployee(employeePayload)).rejects.toThrow(ConflictError);
 
       expect(createRepositoryMock.create).not.toHaveBeenCalled();
     });
 
-    it("should throw an error when employee code already exists", async () => {
+    it('should throw an error when employee code already exists', async () => {
       const employeePayload = {
-        employeeCode: "EMP001",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        country: "India",
-        department: "Engineering",
-        jobTitle: "Software Engineer",
+        employeeCode: 'EMP001',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        country: 'India',
+        department: 'Engineering',
+        jobTitle: 'Software Engineer',
         salary: 50000,
-        currency: "INR",
-        employmentType: "FULL_TIME",
-        dateOfJoining: "2024-01-01",
+        currency: 'INR',
+        employmentType: 'FULL_TIME',
+        dateOfJoining: '2024-01-01',
       };
 
       const existingEmployee = {
-        id: "existing-id",
-        employeeCode: "EMP001",
+        id: 'existing-id',
+        employeeCode: 'EMP001',
       };
 
       const createRepositoryMock = {
@@ -134,32 +125,30 @@ describe("EmployeeService", () => {
 
       const service = new EmployeeService(createRepositoryMock);
 
-      await expect(
-        service.createEmployee(employeePayload),
-      ).rejects.toThrow(ConflictError);
+      await expect(service.createEmployee(employeePayload)).rejects.toThrow(ConflictError);
 
       expect(createRepositoryMock.create).not.toHaveBeenCalled();
     });
 
-    it("should throw conflict error when repository create fails with duplicate employee code", async () => {
+    it('should throw conflict error when repository create fails with duplicate employee code', async () => {
       const employeePayload = {
-        employeeCode: "EMP001",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        country: "India",
-        department: "Engineering",
-        jobTitle: "Software Engineer",
+        employeeCode: 'EMP001',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        country: 'India',
+        department: 'Engineering',
+        jobTitle: 'Software Engineer',
         salary: 50000,
-        currency: "INR",
-        employmentType: "FULL_TIME",
-        dateOfJoining: "2024-01-01",
+        currency: 'INR',
+        employmentType: 'FULL_TIME',
+        dateOfJoining: '2024-01-01',
       };
 
       const duplicateCodeError = {
-        code: "P2002",
+        code: 'P2002',
         meta: {
-          target: ["employeeCode"],
+          target: ['employeeCode'],
         },
       };
 
@@ -172,33 +161,28 @@ describe("EmployeeService", () => {
 
       const service = new EmployeeService(createRepositoryMock);
 
-      await expect(
-        service.createEmployee(employeePayload),
-      ).rejects.toMatchObject({
+      await expect(service.createEmployee(employeePayload)).rejects.toMatchObject({
         errorCode: ERROR_CODES.EMPLOYEE.CODE_EXISTS,
       });
     });
-
   });
 
-
-  describe("Update Employee", () => {
-
-    it("should update employee successfully", async () => {
-      const employeeId = "employee-id";
+  describe('Update Employee', () => {
+    it('should update employee successfully', async () => {
+      const employeeId = 'employee-id';
 
       const existingEmployee = {
         id: employeeId,
-        employeeCode: "EMP001",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john@example.com",
-        country: "India",
-        department: "Engineering",
-        jobTitle: "Software Engineer",
+        employeeCode: 'EMP001',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        country: 'India',
+        department: 'Engineering',
+        jobTitle: 'Software Engineer',
         salary: 50000,
-        currency: "INR",
-        employmentType: "FULL_TIME",
+        currency: 'INR',
+        employmentType: 'FULL_TIME',
         dateOfJoining: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -206,7 +190,7 @@ describe("EmployeeService", () => {
 
       const updatePayload = {
         salary: 70000,
-        jobTitle: "Senior Software Engineer",
+        jobTitle: 'Senior Software Engineer',
       };
 
       const updatedEmployee = {
@@ -222,19 +206,11 @@ describe("EmployeeService", () => {
 
       const service = new EmployeeService(updateRepositoryMock);
 
-      const result = await service.updateEmployee(
-        employeeId,
-        updatePayload,
-      );
+      const result = await service.updateEmployee(employeeId, updatePayload);
 
-      expect(updateRepositoryMock.findById).toHaveBeenCalledWith(
-        employeeId,
-      );
+      expect(updateRepositoryMock.findById).toHaveBeenCalledWith(employeeId);
 
-      expect(updateRepositoryMock.update).toHaveBeenCalledWith(
-        employeeId,
-        updatePayload,
-      );
+      expect(updateRepositoryMock.update).toHaveBeenCalledWith(employeeId, updatePayload);
 
       expect(result.salary).toBe(70000);
 
@@ -243,7 +219,7 @@ describe("EmployeeService", () => {
       // );
     });
 
-    it("should throw NotFoundError when employee does not exist", async () => {
+    it('should throw NotFoundError when employee does not exist', async () => {
       const updateRepositoryMock = {
         ...repositoryMock,
         findById: jest.fn().mockResolvedValue(null),
@@ -253,110 +229,80 @@ describe("EmployeeService", () => {
       const service = new EmployeeService(updateRepositoryMock);
 
       await expect(
-        service.updateEmployee("missing-id", {
+        service.updateEmployee('missing-id', {
           salary: 70000,
-        }),
+        })
       ).rejects.toThrow(NotFoundError);
 
       expect(updateRepositoryMock.update).not.toHaveBeenCalled();
     });
   });
 
-  describe("Delete Employee", () => {
-
-    it("should soft delete employee", async () => {
-
-      const employeeId = "emp-001";
+  describe('Delete Employee', () => {
+    it('should soft delete employee', async () => {
+      const employeeId = 'emp-001';
 
       const existingEmployee = {
-        employeeCode: "EMP001",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        country: "India",
-        department: "Engineering",
-        jobTitle: "Software Engineer",
+        employeeCode: 'EMP001',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        country: 'India',
+        department: 'Engineering',
+        jobTitle: 'Software Engineer',
         salary: 50000,
-        currency: "INR",
-        employmentType: "FULL_TIME",
-        dateOfJoining: "2024-01-01",
-        id: employeeId
+        currency: 'INR',
+        employmentType: 'FULL_TIME',
+        dateOfJoining: '2024-01-01',
+        id: employeeId,
       };
 
       const deleteEmployeeMockRepo = {
         ...repositoryMock,
         findById: jest.fn().mockResolvedValue(existingEmployee),
-        delete: jest.fn()
+        delete: jest.fn(),
       };
       const service = new EmployeeService(deleteEmployeeMockRepo);
 
       await service.deleteEmployee(employeeId);
 
-      expect(deleteEmployeeMockRepo.findById).toHaveBeenCalledWith(
-        employeeId
-      );
+      expect(deleteEmployeeMockRepo.findById).toHaveBeenCalledWith(employeeId);
 
-      expect(deleteEmployeeMockRepo.delete).toHaveBeenCalledWith(
-        employeeId
-      );
+      expect(deleteEmployeeMockRepo.delete).toHaveBeenCalledWith(employeeId);
     });
 
-
-    it("should throw NotFoundError when employee does not exist", async () => {
-
-      const employeeId = "emp-001";
-
-      const existingEmployee = {
-        employeeCode: "EMP001",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        country: "India",
-        department: "Engineering",
-        jobTitle: "Software Engineer",
-        salary: 50000,
-        currency: "INR",
-        employmentType: "FULL_TIME",
-        dateOfJoining: "2024-01-01",
-        id: employeeId
-      };
+    it('should throw NotFoundError when employee does not exist', async () => {
+      const employeeId = 'emp-001';
 
       const deleteEmployeeMockRepo = {
         ...repositoryMock,
         findById: jest.fn(),
-        delete: jest.fn()
+        delete: jest.fn(),
       };
       const service = new EmployeeService(deleteEmployeeMockRepo);
 
-      await expect(
-        service.deleteEmployee(employeeId),
-      ).rejects.toThrow(NotFoundError);
+      await expect(service.deleteEmployee(employeeId)).rejects.toThrow(NotFoundError);
 
-      expect(deleteEmployeeMockRepo.delete).not.toHaveBeenCalledWith(
-        employeeId
-      );
-
+      expect(deleteEmployeeMockRepo.delete).not.toHaveBeenCalledWith(employeeId);
     });
   });
 
-  describe("Get Employee by id", () => {
-
-    it("should get employee by id if exists", async () => {
-
-      const employeeId = "emp-001";
+  describe('Get Employee by id', () => {
+    it('should get employee by id if exists', async () => {
+      const employeeId = 'emp-001';
       const existingEmployee = {
-        employeeCode: "EMP001",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        country: "India",
-        department: "Engineering",
-        jobTitle: "Software Engineer",
+        employeeCode: 'EMP001',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        country: 'India',
+        department: 'Engineering',
+        jobTitle: 'Software Engineer',
         salary: 50000,
-        currency: "INR",
-        employmentType: "FULL_TIME",
-        dateOfJoining: "2024-01-01",
-        id: employeeId
+        currency: 'INR',
+        employmentType: 'FULL_TIME',
+        dateOfJoining: '2024-01-01',
+        id: employeeId,
       };
 
       const getEmployeeByIdMockRepository = {
@@ -367,12 +313,10 @@ describe("EmployeeService", () => {
       const service = new EmployeeService(getEmployeeByIdMockRepository);
       await service.getEmployeeById(employeeId);
       expect(getEmployeeByIdMockRepository.findById).toHaveBeenCalledWith(employeeId);
-
     });
 
-    it("should throw NoFoundError if employee does not exists", async () => {
-
-      const employeeId = "emp-001";
+    it('should throw NoFoundError if employee does not exists', async () => {
+      const employeeId = 'emp-001';
 
       const getEmployeeByIdMockRepository = {
         ...repositoryMock,
@@ -380,34 +324,28 @@ describe("EmployeeService", () => {
       };
 
       const service = new EmployeeService(getEmployeeByIdMockRepository);
-      await expect(
-        service.getEmployeeById(employeeId)
-      ).rejects.toThrow(NotFoundError);
+      await expect(service.getEmployeeById(employeeId)).rejects.toThrow(NotFoundError);
 
       expect(getEmployeeByIdMockRepository.findById).toHaveBeenCalledWith(employeeId);
     });
-
-
   });
 
-  describe("Get list of employees", () => {
-
-    it("should return paginated employees", async () => {
-
+  describe('Get list of employees', () => {
+    it('should return paginated employees', async () => {
       const paginatedResponse = {
         data: [
           {
-            id: "1",
-            employeeCode: "EMP001",
-            firstName: "John",
-            lastName: "Doe",
-            email: "john@example.com",
-            country: "India",
-            department: "Engineering",
-            jobTitle: "Software Engineer",
+            id: '1',
+            employeeCode: 'EMP001',
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            country: 'India',
+            department: 'Engineering',
+            jobTitle: 'Software Engineer',
             salary: 50000,
-            currency: "INR",
-            employmentType: "FULL_TIME",
+            currency: 'INR',
+            employmentType: 'FULL_TIME',
             dateOfJoining: new Date(),
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -421,7 +359,7 @@ describe("EmployeeService", () => {
       const employeeListMockRepository = {
         ...repositoryMock,
         list: jest.fn().mockResolvedValue(paginatedResponse),
-      }
+      };
 
       const query = {
         page: 1,
@@ -432,14 +370,9 @@ describe("EmployeeService", () => {
 
       const result = await service.listEmployees(query);
 
-      expect(employeeListMockRepository.list)
-        .toHaveBeenCalledWith(query);
+      expect(employeeListMockRepository.list).toHaveBeenCalledWith(query);
 
-      expect(result).toEqual(
-        paginatedResponse,
-      );
-
-    })
+      expect(result).toEqual(paginatedResponse);
+    });
   });
-
 });

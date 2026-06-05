@@ -5,7 +5,6 @@ import { DependencyStatus } from './health.types';
 import { HEALTH_DEPENDENCY, HEALTH_STATUS } from './health.constants';
 
 describe('Functional Health Check Unit Tests', () => {
-  
   describe('checkPostgresDatabase', () => {
     it('should return UP when PostgreSQL responds successfully', async () => {
       // Mock the PrismaClient structural footprint functionally

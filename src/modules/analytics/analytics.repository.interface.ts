@@ -1,16 +1,10 @@
-import { DepartmentSalaryInsight, JobTitleSalaryInsight } from "./analytics.schema";
-import { CountrySalaryInsight } from "./analytics.types";
+import { DepartmentSalaryInsight, JobTitleSalaryInsight } from './analytics.schema';
+import { CountrySalaryInsight } from './analytics.types';
 
 export interface AnalyticsRepository {
-  getCountrySalaryInsights(): Promise<
-    CountrySalaryInsight[]
-  >;
+  getCountrySalaryInsights(): Promise<CountrySalaryInsight[]>;
 
-  getJobTitleSalaryInsights(
-    country: string,
-  ): Promise<JobTitleSalaryInsight[]>;
+  getJobTitleSalaryInsights(country: string): Promise<JobTitleSalaryInsight[]>;
 
-  getDepartmentInsights(): Promise<
-    DepartmentSalaryInsight[]
-  >;
+  getDepartmentInsights(): Promise<DepartmentSalaryInsight[]>;
 }

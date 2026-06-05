@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const countrySalaryInsightSchema = z.object({
   country: z.string(),
@@ -18,6 +18,4 @@ export interface DepartmentSalaryInsight {
   employeeCount: number;
 }
 
-export type CountrySalaryInsight = z.infer<
-  typeof countrySalaryInsightSchema
->;
+export type CountrySalaryInsight = z.infer<typeof countrySalaryInsightSchema>;

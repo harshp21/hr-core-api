@@ -1,18 +1,17 @@
-import { Employee, PrismaClient } from "@prisma/client";
+import { Employee, Prisma, PrismaClient } from '@prisma/client';
 
-import type { EmployeeRepository } from "./employee.repository.interface";
-import { CreateEmployeeInput, ListEmployeesQuery, PaginatedEmployees, UpdateEmployeeInput } from "./employee.schema";
+import type { EmployeeRepository } from './employee.repository.interface';
+import {
+  CreateEmployeeInput,
+  ListEmployeesQuery,
+  PaginatedEmployees,
+  UpdateEmployeeInput,
+} from './employee.schema';
 
-export class PrismaEmployeeRepository
-  implements EmployeeRepository {
+export class PrismaEmployeeRepository implements EmployeeRepository {
+  constructor(private readonly prisma: PrismaClient) {}
 
-  constructor(
-    private readonly prisma: PrismaClient,
-  ) { }
-
-  async findByEmail(
-    email: string,
-  ): Promise<Employee | null> {
+  async findByEmail(email: string): Promise<Employee | null> {
     return this.prisma.employee.findUnique({
       where: { email, isDeleted: false },
     });
@@ -27,9 +26,7 @@ export class PrismaEmployeeRepository
     });
   }
 
-  async findByEmployeeCode(
-    employeeCode: string,
-  ): Promise<Employee | null> {
+  async findByEmployeeCode(employeeCode: string): Promise<Employee | null> {
     return this.prisma.employee.findUnique({
       where: {
         employeeCode,
@@ -38,9 +35,7 @@ export class PrismaEmployeeRepository
     });
   }
 
-  async create(
-    input: CreateEmployeeInput,
-  ): Promise<Employee> {
+  async create(input: CreateEmployeeInput): Promise<Employee> {
     return this.prisma.employee.create({
       data: {
         employeeCode: input.employeeCode,
@@ -58,10 +53,7 @@ export class PrismaEmployeeRepository
     });
   }
 
-  async update(
-    id: string,
-    input: UpdateEmployeeInput,
-  ): Promise<Employee> {
+  async update(id: string, input: UpdateEmployeeInput): Promise<Employee> {
     return this.prisma.employee.update({
       where: {
         id,
@@ -81,15 +73,13 @@ export class PrismaEmployeeRepository
     });
   }
 
-  async list(
-    query: ListEmployeesQuery,
-  ): Promise<PaginatedEmployees> {
+  async list(query: ListEmployeesQuery): Promise<PaginatedEmployees> {
     const page = query.page ?? 1;
     const limit = query?.pageSize ?? 10;
 
     const skip = (page - 1) * limit;
 
-    const where: any = {
+    const where: Prisma.EmployeeWhereInput = {
       isDeleted: false,
     };
 
@@ -106,19 +96,19 @@ export class PrismaEmployeeRepository
         {
           firstName: {
             contains: query.search,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
         {
           lastName: {
             contains: query.search,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
         {
           email: {
             contains: query.search,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
         {
@@ -129,21 +119,20 @@ export class PrismaEmployeeRepository
       ];
     }
 
-    const [data, total] =
-      await this.prisma.$transaction([
-        this.prisma.employee.findMany({
-          where,
-          skip,
-          take: limit,
-          orderBy: {
-            createdAt: "desc",
-          },
-        }),
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.employee.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
 
-        this.prisma.employee.count({
-          where,
-        }),
-      ]);
+      this.prisma.employee.count({
+        where,
+      }),
+    ]);
 
     const mappedData = data.map((employee) => ({
       employeeCode: employee.employeeCode,

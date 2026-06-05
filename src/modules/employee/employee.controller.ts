@@ -1,7 +1,8 @@
-import { Request, Response, NextFunction } from "express";
-import { EmployeeService } from "./employee.service";
-import { apiResponse } from "@shared/utils/apiResponse";
-import { HttpStatus } from "@shared/constants/httpStatus";
+import { Request, Response, NextFunction } from 'express';
+import { EmployeeService } from './employee.service';
+import { apiResponse } from '@shared/utils/apiResponse';
+import { HttpStatus } from '@shared/constants/httpStatus';
+import { listEmployeesQuerySchema } from './employee.schema';
 
 export class EmployeeController {
   constructor(private readonly service: EmployeeService) {}
@@ -9,7 +10,7 @@ export class EmployeeController {
   createEmployee = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await this.service.createEmployee(req.body);
-      res.status(HttpStatus.CREATED).json(apiResponse(result, "Employee created successfully"));
+      res.status(HttpStatus.CREATED).json(apiResponse(result, 'Employee created successfully'));
     } catch (err) {
       next(err);
     }
@@ -18,7 +19,7 @@ export class EmployeeController {
   getEmployeeById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await this.service.getEmployeeById(req.params.id);
-      res.status(HttpStatus.OK).json(apiResponse(result, "Employee retrieved successfully"));
+      res.status(HttpStatus.OK).json(apiResponse(result, 'Employee retrieved successfully'));
     } catch (err) {
       next(err);
     }
@@ -26,11 +27,8 @@ export class EmployeeController {
 
   updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await this.service.updateEmployee(
-        req.params.id,
-        req.body
-      );
-      res.status(HttpStatus.OK).json(apiResponse(result, "Employee updated successfully"));
+      const result = await this.service.updateEmployee(req.params.id, req.body);
+      res.status(HttpStatus.OK).json(apiResponse(result, 'Employee updated successfully'));
     } catch (err) {
       next(err);
     }
@@ -39,7 +37,7 @@ export class EmployeeController {
   deleteEmployee = async (req: Request, res: Response, next: NextFunction) => {
     try {
       await this.service.deleteEmployee(req.params.id);
-      res.status(HttpStatus.NO_CONTENT).json(apiResponse(null, "Employee deleted successfully"));
+      res.status(HttpStatus.NO_CONTENT).json(apiResponse(null, 'Employee deleted successfully'));
     } catch (err) {
       next(err);
     }
@@ -47,8 +45,9 @@ export class EmployeeController {
 
   listEmployees = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await this.service.listEmployees(req.query as any);
-      res.status(HttpStatus.OK).json(apiResponse(result, "Employees retrieved successfully"));
+      const query = listEmployeesQuerySchema.parse(req.query);
+      const result = await this.service.listEmployees(query);
+      res.status(HttpStatus.OK).json(apiResponse(result, 'Employees retrieved successfully'));
     } catch (err) {
       next(err);
     }

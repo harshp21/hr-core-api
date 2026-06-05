@@ -1,8 +1,8 @@
-import { EmployeeService } from "./employee.service";
-import { prisma } from "../../lib/prisma";
-import { PrismaEmployeeRepository } from "./prisma-employee.repository";
-import { EmployeeController } from "./employee.controller";
-import { employeeRoutes } from "./employee.routes";
+import { EmployeeService } from './employee.service';
+import { prisma } from '../../lib/prisma';
+import { PrismaEmployeeRepository } from './prisma-employee.repository';
+import { EmployeeController } from './employee.controller';
+import { employeeRoutes } from './employee.routes';
 
 const repository = new PrismaEmployeeRepository(prisma);
 

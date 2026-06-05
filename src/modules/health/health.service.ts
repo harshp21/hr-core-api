@@ -39,10 +39,8 @@ export const aggregateStatus = (dependencies: readonly DependencyStatus[]): Chec
     : HEALTH_STATUS.DOWN;
 
 export const evaluateSystemHealth = async (): Promise<HealthResult> => {
-  const dependencies = await Promise.all([
-    checkPostgresDatabase(getPrismaClient())
-  ]);
-  
+  const dependencies = await Promise.all([checkPostgresDatabase(getPrismaClient())]);
+
   return {
     status: aggregateStatus(dependencies),
     timestamp: new Date().toISOString(),

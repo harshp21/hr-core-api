@@ -1,27 +1,21 @@
-import { AnalyticsService } from "../analytics.service";
+import { AnalyticsService } from '../analytics.service';
+import { AnalyticsRepository } from '../analytics.repository.interface';
 
-describe("AnalyticsService", () => {
-  const mockRepository = {
+describe('AnalyticsService', () => {
+  const mockRepository: jest.Mocked<AnalyticsRepository> = {
     getCountrySalaryInsights: jest.fn(),
     getJobTitleSalaryInsights: jest.fn(),
     getDepartmentInsights: jest.fn(),
   };
 
-  let service: AnalyticsService;
-
   beforeEach(() => {
     jest.clearAllMocks();
-
-    service = new AnalyticsService(
-      mockRepository as any
-    );
   });
 
-  it("should return country salary insights", async () => {
-
+  it('should return country salary insights', async () => {
     const countrySalaryInsights = [
       {
-        country: "India",
+        country: 'India',
         employeeCount: 10,
         averageSalary: 100000,
         minimumSalary: 50000,
@@ -31,49 +25,40 @@ describe("AnalyticsService", () => {
 
     const analyticsRepositoryMock = {
       ...mockRepository,
-      getCountrySalaryInsights: jest.fn().mockResolvedValue(countrySalaryInsights)
+      getCountrySalaryInsights: jest.fn().mockResolvedValue(countrySalaryInsights),
     };
     const service = new AnalyticsService(analyticsRepositoryMock);
 
-    const result =
-      await service.getCountrySalaryInsights();
+    const result = await service.getCountrySalaryInsights();
 
     expect(result).toEqual(countrySalaryInsights);
   });
 
-
-  it("should return average salary by job title for a country", async () => {
+  it('should return average salary by job title for a country', async () => {
     const insights = [
       {
-        jobTitle: "Software Engineer",
+        jobTitle: 'Software Engineer',
         averageSalary: 150000,
       },
     ];
 
     const analyticsRepositoryMock = {
       ...mockRepository,
-      getJobTitleSalaryInsights:
-        jest.fn().mockResolvedValue(insights),
+      getJobTitleSalaryInsights: jest.fn().mockResolvedValue(insights),
     };
     const service = new AnalyticsService(analyticsRepositoryMock);
 
-    const result =
-      await service.getJobTitleSalaryInsights(
-        "India",
-      );
+    const result = await service.getJobTitleSalaryInsights('India');
 
-    expect(analyticsRepositoryMock.getJobTitleSalaryInsights).toHaveBeenCalledWith(
-      "India",
-    );
+    expect(analyticsRepositoryMock.getJobTitleSalaryInsights).toHaveBeenCalledWith('India');
 
     expect(result).toEqual(insights);
   });
 
-
-  it("should return department salary insights", async () => {
+  it('should return department salary insights', async () => {
     const insights = [
       {
-        department: "Engineering",
+        department: 'Engineering',
         averageSalary: 100000,
         employeeCount: 10,
       },
@@ -81,17 +66,13 @@ describe("AnalyticsService", () => {
 
     const analyticsRepositoryMock = {
       ...mockRepository,
-      getDepartmentInsights:
-        jest.fn().mockResolvedValue(insights),
+      getDepartmentInsights: jest.fn().mockResolvedValue(insights),
     };
     const service = new AnalyticsService(analyticsRepositoryMock);
 
-    const result =
-      await service.getDepartmentInsights();
+    const result = await service.getDepartmentInsights();
 
-    expect(
-      analyticsRepositoryMock.getDepartmentInsights,
-    ).toHaveBeenCalled();
+    expect(analyticsRepositoryMock.getDepartmentInsights).toHaveBeenCalled();
 
     expect(result).toEqual(insights);
   });

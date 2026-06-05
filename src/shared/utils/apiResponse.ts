@@ -1,7 +1,4 @@
-export const apiResponse = <T>(
-  data: T,
-  message = "success",
-) => {
+export const apiResponse = <T>(data: T, message = 'success') => {
   return {
     success: true,
     message,

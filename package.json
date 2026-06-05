@@ -11,11 +11,11 @@
     "seed": "tsx prisma/seed.ts"
   },
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules src/server.ts",
-    "build": "npm run clean && tsc -p tsconfig.json",
+    "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register --ignore-watch node_modules src/server.ts",
+    "build": "npm run clean && tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint 'src/**/*.{ts}'",
+    "lint": "eslint \"src/**/*.ts\"",
     "format": "prettier --write 'src/**/*.{ts,json,md}'",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -51,6 +51,8 @@
     "prisma": "^5.14.0",
     "rimraf": "^5.0.0",
     "supertest": "^7.2.2",
+    "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0",
     "ts-jest": "^29.4.11",
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.22.4",

@@ -1,66 +1,35 @@
-import { Request, Response, NextFunction }
-  from "express";
+import { Request, Response, NextFunction } from 'express';
 
-import { HttpStatus }
-  from "@shared/constants/httpStatus";
+import { HttpStatus } from '@shared/constants/httpStatus';
 
-import { apiResponse }
-  from "@shared/utils/apiResponse";
+import { apiResponse } from '@shared/utils/apiResponse';
 
-import { AnalyticsService }
-  from "./analytics.service";
+import { AnalyticsService } from './analytics.service';
 
 export class AnalyticsController {
-  constructor(
-    private readonly analyticsService: AnalyticsService,
-  ) { }
+  constructor(private readonly analyticsService: AnalyticsService) {}
 
-  getCountrySalaryInsights = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  getCountrySalaryInsights = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const insights =
-        await this.analyticsService
-          .getCountrySalaryInsights();
+      const insights = await this.analyticsService.getCountrySalaryInsights();
 
       res
         .status(HttpStatus.OK)
-        .json(
-          apiResponse(
-            insights,
-            "Country salary insights retrieved successfully",
-          ),
-        );
+        .json(apiResponse(insights, 'Country salary insights retrieved successfully'));
     } catch (error) {
       next(error);
     }
   };
 
-  getJobTitleSalaryInsights = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  getJobTitleSalaryInsights = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const country =
-        req.query.country as string;
+      const country = req.query.country as string;
 
-      const insights =
-        await this.analyticsService
-          .getJobTitleSalaryInsights(
-            country,
-          );
+      const insights = await this.analyticsService.getJobTitleSalaryInsights(country);
 
       res
         .status(HttpStatus.OK)
-        .json(
-          apiResponse(
-            insights,
-            "Job title salary insights retrieved successfully",
-          ),
-        );
+        .json(apiResponse(insights, 'Job title salary insights retrieved successfully'));
     } catch (error) {
       next(error);
     }
@@ -69,18 +38,14 @@ export class AnalyticsController {
   public getDepartmentInsights = async (
     _req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
-      const insights =
-        await this.analyticsService.getDepartmentInsights();
+      const insights = await this.analyticsService.getDepartmentInsights();
 
-      res.status(HttpStatus.OK).json(
-        apiResponse(
-          insights,
-          "Department salary insights retrieved successfully",
-        ),
-      );
+      res
+        .status(HttpStatus.OK)
+        .json(apiResponse(insights, 'Department salary insights retrieved successfully'));
     } catch (error) {
       next(error);
     }

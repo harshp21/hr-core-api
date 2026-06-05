@@ -27,7 +27,7 @@ export interface DependencyStatus {
 export interface HealthResult {
   readonly status: CheckStatus;
   readonly timestamp: string; // ISO 8601 string format
-  readonly uptime: number;     // Application process uptime in seconds
+  readonly uptime: number; // Application process uptime in seconds
   readonly memory: MemoryMetrics;
   readonly dependencies: readonly DependencyStatus[]; // Readonly array to prevent array mutations
 }

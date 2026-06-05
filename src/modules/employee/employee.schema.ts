@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const requiredText = z.string().trim().min(1);
 const positiveSalary = z.number().gt(0);
@@ -26,51 +26,33 @@ export const updateEmployeeSchema = employeeSchema
   })
   .partial();
 
-export const employeeEntitySchema =
-  employeeSchema.extend({
-    id: z.string().uuid(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
-  });
+export const employeeEntitySchema = employeeSchema.extend({
+  id: z.string().uuid(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
 
+export const listEmployeesQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
 
-export const listEmployeesQuerySchema =
-  z.object({
-    page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().positive().max(100).default(20),
 
-    pageSize: z.coerce.number()
-      .int()
-      .positive()
-      .max(100)
-      .default(20),
+  search: z.string().optional(),
 
-    search: z.string().optional(),
+  country: z.string().optional(),
 
-    country: z.string().optional(),
+  department: z.string().optional(),
 
-    department: z.string().optional(),
+  sortBy: z.enum(['firstName', 'salary', 'dateOfJoining']).optional(),
 
-    sortBy: z.enum([
-      "firstName",
-      "salary",
-      "dateOfJoining",
-    ]).optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional(),
+});
 
-    sortOrder: z.enum([
-      "asc",
-      "desc",
-    ]).optional(),
-  });
+export type CreateEmployeeInput = z.infer<typeof createEmployeeSchema>;
 
-export type CreateEmployeeInput =
-  z.infer<typeof createEmployeeSchema>;
+export type UpdateEmployeeInput = z.infer<typeof updateEmployeeSchema>;
 
-export type UpdateEmployeeInput =
-  z.infer<typeof updateEmployeeSchema>;
-
-export type ListEmployeesQuery =
-  z.infer<typeof listEmployeesQuerySchema>;
-
+export type ListEmployeesQuery = z.infer<typeof listEmployeesQuerySchema>;
 
 export type ListEmployeesResponse = {
   data: Employee[];

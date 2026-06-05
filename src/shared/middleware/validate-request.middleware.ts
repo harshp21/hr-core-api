@@ -1,5 +1,5 @@
-import { z, ZodError, ZodTypeAny } from "zod";
-import { Request, Response, NextFunction } from "express";
+import { ZodError, ZodTypeAny } from 'zod';
+import { Request, Response, NextFunction } from 'express';
 
 type RequestValidationSchema = {
   body?: ZodTypeAny;
@@ -8,8 +8,7 @@ type RequestValidationSchema = {
 };
 
 export const validateRequest =
-  (schema: RequestValidationSchema) =>
-  (req: Request, res: Response, next: NextFunction) => {
+  (schema: RequestValidationSchema) => (req: Request, res: Response, next: NextFunction) => {
     try {
       if (schema.body) {
         req.body = schema.body.parse(req.body);
@@ -28,7 +27,7 @@ export const validateRequest =
       const validationError = err instanceof ZodError ? err : null;
 
       return res.status(400).json({
-        message: "Validation error",
+        message: 'Validation error',
         errors: validationError?.issues ?? [],
       });
     }

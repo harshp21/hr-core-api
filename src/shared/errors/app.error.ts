@@ -1,4 +1,4 @@
-import { HttpStatus } from "@shared/constants/httpStatus";
+import { HttpStatus } from '@shared/constants/httpStatus';
 
 class AppError extends Error {
   constructor(
@@ -12,29 +12,27 @@ class AppError extends Error {
 }
 
 class NotFoundError extends AppError {
-   constructor(
+  constructor(
     public readonly errorCode: string,
-    message: string,
+    message: string
   ) {
     super(message, errorCode, HttpStatus.NOT_FOUND);
   }
 }
 
 class ConflictError extends AppError {
-
   constructor(
     public readonly errorCode: string,
-    message: string,
+    message: string
   ) {
     super(message, errorCode, HttpStatus.CONFLICT);
   }
 }
 
-
 class ValidationError extends AppError {
   constructor(
     public readonly errorCode: string,
-    message: string,
+    message: string
   ) {
     super(message, errorCode, HttpStatus.BAD_REQUEST);
   }

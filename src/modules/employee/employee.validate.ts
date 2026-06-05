@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const createEmployeeSchema = z.object({
   employeeCode: z.string().min(1),
@@ -18,5 +18,4 @@ export const createEmployeeSchema = z.object({
   dateOfJoining: z.string(),
 });
 
-export const updateEmployeeSchema =
-  createEmployeeSchema.partial();
+export const updateEmployeeSchema = createEmployeeSchema.partial();
