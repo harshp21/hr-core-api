@@ -250,6 +250,7 @@ describe('PrismaEmployeeRepository', () => {
     });
 
     expect(result.data.length).toBe(2);
+    expect(result.data[0].id).toBeDefined();
     expect(result.total).toBe(2);
   });
 
@@ -276,6 +277,7 @@ describe('PrismaEmployeeRepository', () => {
     });
 
     expect(result.data.length).toBe(2);
+    expect(result.data[0].id).toBeDefined();
     expect(result.page).toBe(2);
   });
 });

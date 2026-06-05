@@ -135,6 +135,7 @@ export class PrismaEmployeeRepository implements EmployeeRepository {
     ]);
 
     const mappedData = data.map((employee) => ({
+      id: employee.id,
       employeeCode: employee.employeeCode,
       firstName: employee.firstName,
       lastName: employee.lastName,

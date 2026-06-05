@@ -32,6 +32,10 @@ export const employeeEntitySchema = employeeSchema.extend({
   updatedAt: z.date(),
 });
 
+export const employeeListItemSchema = employeeSchema.extend({
+  id: z.string().uuid(),
+});
+
 export const listEmployeesQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
 
@@ -55,7 +59,7 @@ export type UpdateEmployeeInput = z.infer<typeof updateEmployeeSchema>;
 export type ListEmployeesQuery = z.infer<typeof listEmployeesQuerySchema>;
 
 export type ListEmployeesResponse = {
-  data: Employee[];
+  data: EmployeeListItem[];
   total: number;
   page: number;
   limit: number;
@@ -63,10 +67,12 @@ export type ListEmployeesResponse = {
 };
 
 export interface PaginatedEmployees {
-  data: Employee[];
+  data: EmployeeListItem[];
   total: number;
   page: number;
   pageSize: number;
 }
 
 export type Employee = z.infer<typeof employeeSchema>;
+
+export type EmployeeListItem = z.infer<typeof employeeListItemSchema>;
