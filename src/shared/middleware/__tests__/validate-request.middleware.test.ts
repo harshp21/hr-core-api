@@ -14,7 +14,7 @@ describe('validateRequest', () => {
       body: {
         firstName: 'John',
       },
-    } as Request;
+    } as unknown as Request;
 
     const res = {} as Response;
 
@@ -36,7 +36,7 @@ describe('validateRequest', () => {
       params: {
         id: crypto.randomUUID(),
       },
-    } as Request;
+    } as unknown as Request;
 
     const res = {} as Response;
 
@@ -58,7 +58,7 @@ describe('validateRequest', () => {
       query: {
         page: '1',
       },
-    } as Request;
+    } as unknown as Request;
 
     const res = {} as Response;
 

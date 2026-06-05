@@ -13,7 +13,7 @@ describe('errorHandler', () => {
     const res  = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
-    } as Response;
+    } as unknown as Response;
 
     const next = jest.fn();
 
@@ -33,12 +33,12 @@ describe('errorHandler', () => {
       'Employee email already exists'
     );
 
-    const req = {} as Request;
+    const req = {} as unknown as Request;
 
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
-    } as Response;
+    } as unknown as Response;
 
     const next = jest.fn();
 
@@ -70,7 +70,7 @@ describe('errorHandler', () => {
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
-    } as Response;
+    } as unknown as Response;
 
     const next = jest.fn();
 

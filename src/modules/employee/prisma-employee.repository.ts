@@ -54,13 +54,20 @@ export class PrismaEmployeeRepository implements EmployeeRepository {
   }
 
   async update(id: string, input: UpdateEmployeeInput): Promise<Employee> {
+    const updateData: Prisma.EmployeeUpdateInput = {
+      ...input,
+      ...(input.dateOfJoining
+        ? {
+            dateOfJoining: new Date(input.dateOfJoining),
+          }
+        : {}),
+    };
+
     return this.prisma.employee.update({
       where: {
         id,
       },
-      data: {
-        ...input,
-      },
+      data: updateData,
     });
   }
 

@@ -190,6 +190,29 @@ describe('PrismaEmployeeRepository', () => {
     expect(result.department).toBe('Platform');
   });
 
+  it('should update employee when dateOfJoining is provided as string', async () => {
+    const employee = await repository.create({
+      employeeCode: 'EMP001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+      department: 'Engineering',
+      country: 'India',
+      jobTitle: 'Senior Software Engineer',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+      salary: 50000,
+    });
+
+    const result = await repository.update(employee.id, {
+      dateOfJoining: '2024-01-15',
+    });
+
+    expect(result.dateOfJoining).toBeInstanceOf(Date);
+    expect(result.dateOfJoining.toISOString()).toContain('2024-01-15');
+  });
+
   it('should delete employee', async () => {
     const employee = await repository.create({
       employeeCode: 'EMP001',

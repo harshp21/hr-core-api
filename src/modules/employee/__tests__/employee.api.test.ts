@@ -82,6 +82,44 @@ describe('Employee API', () => {
     expect(deleteRes.status).toBe(HttpStatus.NO_CONTENT);
   });
 
+  it('should update employee via API with full payload including dateOfJoining', async () => {
+    const suffix = unique();
+
+    const createRes = await request(app)
+      .post('/api/v1/employees')
+      .send({
+        employeeCode: `EMP-${suffix}`,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: `john-update-${suffix}@example.com`,
+        department: 'Engineering',
+        country: 'India',
+        salary: 50000,
+        jobTitle: 'Software Engineer',
+        currency: 'INR',
+        employmentType: 'FULL_TIME',
+        dateOfJoining: '2024-01-01',
+      });
+
+    const id = createRes.body.data.id;
+
+    const updateRes = await request(app).put(`/api/v1/employees/${id}`).send({
+      firstName: 'Jane',
+      lastName: 'Doe',
+      department: 'Platform',
+      country: 'India',
+      salary: 70000,
+      jobTitle: 'Senior Software Engineer',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    expect(updateRes.status).toBe(HttpStatus.OK);
+    expect(updateRes.body.data.firstName).toBe('Jane');
+    expect(updateRes.body.data.department).toBe('Platform');
+  });
+
   it('should list employees via API', async () => {
     const suffix = unique();
 
