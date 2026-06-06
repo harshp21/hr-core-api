@@ -25,3 +25,22 @@ export const env = {
 };
 
 export const isDevelopment = env.nodeEnv === 'development';
+
+/**
+ * Validate critical environment configuration at startup.
+ */
+export const validateConfiguration = (): void => {
+  const errors: string[] = [];
+
+  if (!env.databaseUrl) {
+    errors.push('DATABASE_URL is not set');
+  }
+
+  if (errors.length > 0) {
+    console.error('❌ Configuration validation failed:');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    process.exit(1);
+  }
+
+  console.log('✓ Configuration validated successfully');
+};

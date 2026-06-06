@@ -1,16 +1,8 @@
 // health.service.ts
 import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../lib/prisma';
 import { CheckStatus, DependencyStatus, MemoryMetrics, HealthResult } from './health.types';
 import { HEALTH_DEPENDENCY, HEALTH_STATUS } from './health.constants';
-
-let prismaClient: PrismaClient | null = null;
-
-const getPrismaClient = (): PrismaClient => {
-  if (!prismaClient) {
-    prismaClient = new PrismaClient();
-  }
-  return prismaClient;
-};
 
 export const getMemoryUsage = (): MemoryMetrics => {
   const { heapUsed, heapTotal } = process.memoryUsage();
@@ -21,14 +13,15 @@ export const getMemoryUsage = (): MemoryMetrics => {
 };
 
 /**
- * Functional Task: Safe PostgreSQL engine verification
+ * Safe PostgreSQL engine verification with error handling.
  */
-export const checkPostgresDatabase = async (client: PrismaClient): Promise<DependencyStatus> => {
+export const checkPostgresDatabase = async (client?: PrismaClient): Promise<DependencyStatus> => {
+  const dbClient = client ?? prisma;
   try {
-    // Standard Postgres connection assertion query
-    await client.$queryRaw`SELECT 1`;
+    await dbClient.$queryRaw`SELECT 1`;
     return { name: HEALTH_DEPENDENCY.POSTGRES, status: HEALTH_STATUS.UP };
-  } catch {
+  } catch (error) {
+    console.error('Health check: Database connection failed', error);
     return { name: HEALTH_DEPENDENCY.POSTGRES, status: HEALTH_STATUS.DOWN };
   }
 };
@@ -39,7 +32,7 @@ export const aggregateStatus = (dependencies: readonly DependencyStatus[]): Chec
     : HEALTH_STATUS.DOWN;
 
 export const evaluateSystemHealth = async (): Promise<HealthResult> => {
-  const dependencies = await Promise.all([checkPostgresDatabase(getPrismaClient())]);
+  const dependencies = await Promise.all([checkPostgresDatabase()]);
 
   return {
     status: aggregateStatus(dependencies),
