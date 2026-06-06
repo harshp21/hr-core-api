@@ -6,8 +6,11 @@ export function randomItem<T>(
   ];
 }
 
-export function randomSalary(): number {
+export function randomSalary(
+  min = 30000,
+  max = 300000,
+): number {
   return Math.floor(
-    Math.random() * (300000 - 30000) + 30000,
+    Math.random() * (max - min) + min,
   );
 }

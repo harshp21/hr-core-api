@@ -1,7 +1,7 @@
 export const COUNTRIES = [
   "India",
-  "USA",
-  "UK",
+  "United States",
+  "United Kingdom",
   "Germany",
   "Canada",
   "Australia",
