@@ -1,0 +1,54 @@
+import { Request, Response, NextFunction } from 'express';
+
+import { HttpStatus } from '@shared/constants/httpStatus';
+
+import { apiResponse } from '@shared/utils/apiResponse';
+
+import { AnalyticsService } from './analytics.service';
+import { jobTitleSalaryInsightsQuerySchema } from './analytics.schema';
+
+export class AnalyticsController {
+  constructor(private readonly analyticsService: AnalyticsService) {}
+
+  getCountrySalaryInsights = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const insights = await this.analyticsService.getCountrySalaryInsights();
+
+      res
+        .status(HttpStatus.OK)
+        .json(apiResponse(insights, 'Country salary insights retrieved successfully'));
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getJobTitleSalaryInsights = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { country } = jobTitleSalaryInsightsQuerySchema.parse(req.query);
+
+      const insights = await this.analyticsService.getJobTitleSalaryInsights(country);
+
+      res
+        .status(HttpStatus.OK)
+        .json(apiResponse(insights, 'Job title salary insights retrieved successfully'));
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getDepartmentInsights = async (
+    _req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const insights = await this.analyticsService.getDepartmentInsights();
+
+      res
+        .status(HttpStatus.OK)
+        .json(apiResponse(insights, 'Department salary insights retrieved successfully'));
+    } catch (error) {
+      next(error);
+    }
+  };
+}
