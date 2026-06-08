@@ -1,0 +1,468 @@
+import { prisma } from '../../../lib/prisma';
+import { PrismaEmployeeRepository } from '../prisma-employee.repository';
+
+describe('PrismaEmployeeRepository', () => {
+  let repository: PrismaEmployeeRepository;
+
+  beforeEach(() => {
+    repository = new PrismaEmployeeRepository(prisma);
+  });
+
+  afterEach(async () => {
+    await prisma.employee.deleteMany();
+  });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
+
+  it('should find employee by email', async () => {
+    const employee = await repository.create({
+      employeeCode: 'EMP001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 50000,
+      jobTitle: 'Senior Software Engineer',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    const result = await repository.findByEmail('john@example.com');
+
+    expect(result).not.toBeNull();
+
+    expect(result?.id).toBe(employee.id);
+
+    expect(result?.email).toBe('john@example.com');
+  });
+
+  it('should find employee by email', async () => {
+    const employee = await repository.create({
+      employeeCode: 'EMP001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 50000,
+      jobTitle: 'Senior Software Engineer',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    const result = await repository.findByEmail('john@example.com');
+
+    expect(result).not.toBeNull();
+
+    expect(result?.id).toBe(employee.id);
+
+    expect(result?.email).toBe('john@example.com');
+  });
+
+  it('should return null when email does not exist', async () => {
+    const result = await repository.findByEmail('missing@example.com');
+
+    expect(result).toBeNull();
+  });
+
+  it('should find employee by employee code', async () => {
+    const employee = await repository.create({
+      employeeCode: 'EMP001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 50000,
+      jobTitle: 'Senior Software Engineer',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    const result = await repository.findByEmployeeCode('EMP001');
+
+    expect(result).not.toBeNull();
+
+    expect(result?.id).toBe(employee.id);
+
+    expect(result?.employeeCode).toBe('EMP001');
+  });
+
+  it('should return null when employee code does not exist', async () => {
+    const result = await repository.findByEmployeeCode('UNKNOWN');
+
+    expect(result).toBeNull();
+  });
+
+  it('should create employee', async () => {
+    const result = await repository.create({
+      employeeCode: 'EMP001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 50000,
+      jobTitle: 'Senior Software Engineer',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    expect(result.id).toBeDefined();
+
+    expect(result.employeeCode).toBe('EMP001');
+
+    expect(result.email).toBe('john@example.com');
+
+    const saved = await prisma.employee.findUnique({
+      where: {
+        email: 'john@example.com',
+      },
+    });
+
+    expect(saved).not.toBeNull();
+
+    expect(saved?.employeeCode).toBe('EMP001');
+  });
+
+  it('should find employee by id', async () => {
+    const employee = await repository.create({
+      employeeCode: 'EMP001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 50000,
+      jobTitle: 'Senior Software Engineer',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    const result = await repository.findById(employee.id);
+
+    expect(result).not.toBeNull();
+
+    expect(result?.id).toBe(employee.id);
+
+    expect(result?.email).toBe(employee.email);
+  });
+
+  it('should return null when employee id does not exist', async () => {
+    const result = await repository.findById(crypto.randomUUID());
+
+    expect(result).toBeNull();
+  });
+
+  it('should update employee', async () => {
+    const employee = await repository.create({
+      employeeCode: 'EMP001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+
+      department: 'Engineering',
+      country: 'India',
+
+      jobTitle: 'Senior Software Engineer',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+
+      salary: 50000,
+    });
+
+    const result = await repository.update(employee.id, {
+      firstName: 'Jane',
+      department: 'Platform',
+    });
+
+    expect(result.firstName).toBe('Jane');
+
+    expect(result.department).toBe('Platform');
+  });
+
+  it('should update employee when dateOfJoining is provided as string', async () => {
+    const employee = await repository.create({
+      employeeCode: 'EMP001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+      department: 'Engineering',
+      country: 'India',
+      jobTitle: 'Senior Software Engineer',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+      salary: 50000,
+    });
+
+    const result = await repository.update(employee.id, {
+      dateOfJoining: '2024-01-15',
+    });
+
+    expect(result.dateOfJoining).toBeInstanceOf(Date);
+    expect(result.dateOfJoining.toISOString()).toContain('2024-01-15');
+  });
+
+  it('should delete employee', async () => {
+    const employee = await repository.create({
+      employeeCode: 'EMP001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+
+      department: 'Engineering',
+      country: 'India',
+
+      salary: 50000,
+
+      jobTitle: 'Senior Software Engineer',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    await repository.delete(employee.id);
+
+    const result = await repository.findById(employee.id);
+
+    expect(result).toBeNull();
+  });
+
+  it('should list employees with pagination', async () => {
+    await repository.create({
+      employeeCode: 'EMP001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john1@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 50000,
+      jobTitle: 'Dev',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    await repository.create({
+      employeeCode: 'EMP002',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      email: 'jane@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 60000,
+      jobTitle: 'Dev',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    const result = await repository.list({
+      page: 1,
+      pageSize: 10,
+    });
+
+    expect(result.data.length).toBe(2);
+    expect(result.data[0].id).toBeDefined();
+    expect(result.total).toBe(2);
+  });
+
+  it('should paginate employees', async () => {
+    for (let i = 1; i <= 5; i++) {
+      await repository.create({
+        employeeCode: `EMP00${i}`,
+        firstName: 'User',
+        lastName: `${i}`,
+        email: `user${i}@mail.com`,
+        department: 'Engineering',
+        country: 'India',
+        salary: 50000,
+        jobTitle: 'Dev',
+        currency: 'INR',
+        employmentType: 'FULL_TIME',
+        dateOfJoining: '2024-01-01',
+      });
+    }
+
+    const result = await repository.list({
+      page: 2,
+      pageSize: 2,
+    });
+
+    expect(result.data.length).toBe(2);
+    expect(result.data[0].id).toBeDefined();
+    expect(result.page).toBe(2);
+  });
+
+  it('should filter employees by jobTitle', async () => {
+    await repository.create({
+      employeeCode: 'EMP-JT-001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'jobtitle1@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 50000,
+      jobTitle: 'Dev',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    await repository.create({
+      employeeCode: 'EMP-JT-002',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      email: 'jobtitle2@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 60000,
+      jobTitle: 'QA',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    const result = await repository.list({
+      page: 1,
+      pageSize: 10,
+      jobTitle: 'Dev',
+    });
+
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0]?.jobTitle).toBe('Dev');
+  });
+
+  it('should sort employees by salary in ascending order', async () => {
+    await repository.create({
+      employeeCode: 'EMP-SORT-001',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'sort1@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 70000,
+      jobTitle: 'Dev',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    await repository.create({
+      employeeCode: 'EMP-SORT-002',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      email: 'sort2@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 50000,
+      jobTitle: 'Dev',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    const result = await repository.list({
+      page: 1,
+      pageSize: 10,
+      sortBy: 'salary',
+      sortOrder: 'asc',
+    });
+
+    expect(result.data).toHaveLength(2);
+    expect(result.data[0]?.salary).toBe(50000);
+    expect(result.data[1]?.salary).toBe(70000);
+  });
+
+  it('should sort employees by firstName in descending order', async () => {
+    await repository.create({
+      employeeCode: 'EMP-SORT-003',
+      firstName: 'Alice',
+      lastName: 'Doe',
+      email: 'sort3@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 50000,
+      jobTitle: 'Dev',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    await repository.create({
+      employeeCode: 'EMP-SORT-004',
+      firstName: 'Zara',
+      lastName: 'Doe',
+      email: 'sort4@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 60000,
+      jobTitle: 'Dev',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    const result = await repository.list({
+      page: 1,
+      pageSize: 10,
+      sortBy: 'firstName',
+      sortOrder: 'desc',
+    });
+
+    expect(result.data).toHaveLength(2);
+    expect(result.data[0]?.firstName).toBe('Zara');
+    expect(result.data[1]?.firstName).toBe('Alice');
+  });
+
+  it('should sort employees by dateOfJoining in descending order', async () => {
+    await repository.create({
+      employeeCode: 'EMP-SORT-005',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'sort5@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 50000,
+      jobTitle: 'Dev',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-01-01',
+    });
+
+    await repository.create({
+      employeeCode: 'EMP-SORT-006',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      email: 'sort6@example.com',
+      department: 'Engineering',
+      country: 'India',
+      salary: 60000,
+      jobTitle: 'Dev',
+      currency: 'INR',
+      employmentType: 'FULL_TIME',
+      dateOfJoining: '2024-03-01',
+    });
+
+    const result = await repository.list({
+      page: 1,
+      pageSize: 10,
+      sortBy: 'dateOfJoining',
+      sortOrder: 'desc',
+    });
+
+    expect(result.data).toHaveLength(2);
+    expect(result.data[0]?.dateOfJoining).toContain('2024-03-01');
+    expect(result.data[1]?.dateOfJoining).toContain('2024-01-01');
+  });
+});
