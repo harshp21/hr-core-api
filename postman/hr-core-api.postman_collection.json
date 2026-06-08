@@ -1,0 +1,613 @@
+{
+  "info": {
+    "_postman_id": "0f95a8b8-3aa9-4ce1-8c13-7d497064f8d2",
+    "name": "hr-core-api",
+    "description": "Postman collection aligned with MVP implementation and tests for health, employees, and analytics APIs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Checks API and dependency health."
+          },
+          "response": [
+            {
+              "name": "200 OK - Health",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/health",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "health"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Health check successful\",\n  \"response\": {\n    \"status\": \"UP\",\n    \"dependencies\": [\n      {\n        \"name\": \"postgres\",\n        \"status\": \"UP\"\n      }\n    ]\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Employees",
+      "item": [
+        {
+          "name": "Create Employee",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Create employee returns 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const payload = pm.response.json();",
+                  "if (payload && payload.response && payload.response.id) {",
+                  "  pm.collectionVariables.set('employeeId', payload.response.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeCode\": \"EMP001\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"department\": \"Engineering\",\n  \"country\": \"India\",\n  \"salary\": 50000,\n  \"jobTitle\": \"Software Engineer\",\n  \"currency\": \"INR\",\n  \"employmentType\": \"FULL_TIME\",\n  \"dateOfJoining\": \"2024-01-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/employees",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "employees"
+              ]
+            },
+            "description": "Creates a new employee and stores employeeId for subsequent requests."
+          },
+          "response": [
+            {
+              "name": "201 Created - Employee",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/employees",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "employees"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Employee created successfully\",\n  \"response\": {\n    \"id\": \"4fca9aab-c588-4f8d-b570-b70302f55b0d\",\n    \"employeeCode\": \"EMP001\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"country\": \"India\",\n    \"department\": \"Engineering\",\n    \"jobTitle\": \"Software Engineer\",\n    \"salary\": \"50000\",\n    \"currency\": \"INR\",\n    \"employmentType\": \"FULL_TIME\",\n    \"dateOfJoining\": \"2024-01-01T00:00:00.000Z\",\n    \"isDeleted\": false,\n    \"createdAt\": \"2026-06-06T00:00:00.000Z\",\n    \"updatedAt\": \"2026-06-06T00:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "409 Conflict - Duplicate employeeCode",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/employees",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "employees"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"code\": \"EMPLOYEE_CODE_EXISTS\",\n  \"message\": \"Employee code already exists\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Employees",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/employees?page=1&pageSize=20&search=&country=&department=&jobTitle={{jobTitle}}&sortBy=firstName&sortOrder=asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "employees"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "20"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "country",
+                  "value": ""
+                },
+                {
+                  "key": "department",
+                  "value": ""
+                },
+                {
+                  "key": "jobTitle",
+                  "value": "{{jobTitle}}"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "firstName"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "Returns paginated employees."
+          },
+          "response": [
+            {
+              "name": "200 OK - Employee list",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/employees?page=1&pageSize=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "employees"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "20"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Employees retrieved successfully\",\n  \"response\": {\n    \"data\": [\n      {\n        \"id\": \"4fca9aab-c588-4f8d-b570-b70302f55b0d\",\n        \"employeeCode\": \"EMP001\",\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@example.com\",\n        \"country\": \"India\",\n        \"department\": \"Engineering\",\n        \"jobTitle\": \"Software Engineer\",\n        \"salary\": 50000,\n        \"currency\": \"INR\",\n        \"employmentType\": \"FULL_TIME\",\n        \"dateOfJoining\": \"2024-01-01T00:00:00.000Z\"\n      }\n    ],\n    \"total\": 1,\n    \"page\": 1,\n    \"pageSize\": 20\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Employee By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/employees/{{employeeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "employees",
+                "{{employeeId}}"
+              ]
+            },
+            "description": "Fetches a single employee by id."
+          },
+          "response": [
+            {
+              "name": "200 OK - Employee by id",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/employees/{{employeeId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "employees",
+                    "{{employeeId}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Employee retrieved successfully\",\n  \"response\": {\n    \"id\": \"4fca9aab-c588-4f8d-b570-b70302f55b0d\",\n    \"employeeCode\": \"EMP001\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"country\": \"India\",\n    \"department\": \"Engineering\",\n    \"jobTitle\": \"Software Engineer\",\n    \"salary\": \"50000\",\n    \"currency\": \"INR\",\n    \"employmentType\": \"FULL_TIME\",\n    \"dateOfJoining\": \"2024-01-01T00:00:00.000Z\",\n    \"isDeleted\": false,\n    \"createdAt\": \"2026-06-06T00:00:00.000Z\",\n    \"updatedAt\": \"2026-06-06T00:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "404 Not Found - Employee missing",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/employees/{{employeeId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "employees",
+                    "{{employeeId}}"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"code\": \"EMPLOYEE_NOT_FOUND\",\n  \"message\": \"Employee not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Employee",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"department\": \"Platform\",\n  \"country\": \"India\",\n  \"salary\": 70000,\n  \"jobTitle\": \"Senior Software Engineer\",\n  \"currency\": \"INR\",\n  \"employmentType\": \"FULL_TIME\",\n  \"dateOfJoining\": \"2024-01-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/employees/{{employeeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "employees",
+                "{{employeeId}}"
+              ]
+            },
+            "description": "Updates an employee by id."
+          },
+          "response": [
+            {
+              "name": "200 OK - Employee updated",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/employees/{{employeeId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "employees",
+                    "{{employeeId}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Employee updated successfully\",\n  \"response\": {\n    \"id\": \"4fca9aab-c588-4f8d-b570-b70302f55b0d\",\n    \"employeeCode\": \"EMP001\",\n    \"firstName\": \"Jane\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"country\": \"India\",\n    \"department\": \"Platform\",\n    \"jobTitle\": \"Senior Software Engineer\",\n    \"salary\": \"70000\",\n    \"currency\": \"INR\",\n    \"employmentType\": \"FULL_TIME\",\n    \"dateOfJoining\": \"2024-01-01T00:00:00.000Z\",\n    \"isDeleted\": false,\n    \"createdAt\": \"2026-06-06T00:00:00.000Z\",\n    \"updatedAt\": \"2026-06-06T00:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Employee",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/employees/{{employeeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "employees",
+                "{{employeeId}}"
+              ]
+            },
+            "description": "Soft-deletes an employee."
+          },
+          "response": [
+            {
+              "name": "204 No Content - Deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/employees/{{employeeId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "employees",
+                    "{{employeeId}}"
+                  ]
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Country Salary Insights",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/countries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "countries"
+              ]
+            },
+            "description": "Returns salary insights grouped by country."
+          },
+          "response": [
+            {
+              "name": "200 OK - Country analytics",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/analytics/countries",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "analytics",
+                    "countries"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Country salary insights retrieved successfully\",\n  \"response\": [\n    {\n      \"country\": \"India\",\n      \"employeeCount\": 1000,\n      \"averageSalary\": 65432.1,\n      \"minimumSalary\": 30000,\n      \"maximumSalary\": 120000\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Job Title Salary Insights By Country",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/job-titles?country={{country}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "job-titles"
+              ],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "{{country}}"
+                }
+              ]
+            },
+            "description": "Returns average salary by job title for a country."
+          },
+          "response": [
+            {
+              "name": "200 OK - Job title analytics",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/analytics/job-titles?country={{country}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "analytics",
+                    "job-titles"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "{{country}}"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Job title salary insights retrieved successfully\",\n  \"response\": [\n    {\n      \"jobTitle\": \"Software Engineer\",\n      \"averageSalary\": 70000\n    }\n  ]\n}"
+            },
+            {
+              "name": "400 Bad Request - Missing country",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/analytics/job-titles",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "analytics",
+                    "job-titles"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"code\": \"VALIDATION_ERROR\",\n  \"message\": \"Validation failed\",\n  \"errors\": [\n    {\n      \"field\": \"country\",\n      \"message\": \"Required\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Department Salary Insights",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/departments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "departments"
+              ]
+            },
+            "description": "Returns salary insights grouped by department."
+          },
+          "response": [
+            {
+              "name": "200 OK - Department analytics",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/analytics/departments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "analytics",
+                    "departments"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Department salary insights retrieved successfully\",\n  \"response\": [\n    {\n      \"department\": \"Engineering\",\n      \"averageSalary\": 78000,\n      \"employeeCount\": 2500\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "employeeId",
+      "value": ""
+    },
+    {
+      "key": "country",
+      "value": "India"
+    },
+    {
+      "key": "jobTitle",
+      "value": "Software Engineer"
+    }
+  ]
+}
