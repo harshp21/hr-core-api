@@ -1,0 +1,22 @@
+import type {
+  CreateEmployeeInput,
+  ListEmployeesQuery,
+  PaginatedEmployees,
+} from './employee.schema';
+import { Employee } from './types/employee.types';
+
+export interface EmployeeRepository {
+  findById(id: string): Promise<Employee | null>;
+
+  findByEmail(email: string): Promise<Employee | null>;
+
+  findByEmployeeCode(employeeCode: string): Promise<Employee | null>;
+
+  create(employee: CreateEmployeeInput): Promise<Employee>;
+
+  update(employeeId: string, updatePayload: Partial<CreateEmployeeInput>): Promise<Employee>;
+
+  delete(id: string): Promise<Employee>;
+
+  list(query: ListEmployeesQuery): Promise<PaginatedEmployees>;
+}
